@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}Wyślij odpowiedź – {{ task.title }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-8 col-lg-6">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h2 class="card-title mb-3">Odpowiedź na zadanie</h2>
+        <h4 class="mb-4">{{ task.title }}</h4>
+        <p><strong>Opis:</strong> {{ task.description }}</p>
+        <p><strong>Termin:</strong> {{ task.due_date.strftime('%Y-%m-%d') }}</p>
+
+        <form method="POST" enctype="multipart/form-data">
+          {{ form.hidden_tag() }}
+
+          <div class="mb-3">
+            {{ form.answer.label(class="form-label") }}
+            {{ form.answer(class="form-control", rows=4, placeholder="Twoja odpowiedź tekstowa") }}
+          </div>
+
+          <div class="mb-3">
+            {{ form.attachment.label(class="form-label") }}
+            {{ form.attachment(class="form-control") }}
+            <div class="form-text">Dozwolone: pliki PDF</div>
+          </div>
+
+          <div class="d-grid">
+            {{ form.submit(class="btn btn-primary") }}
+          </div>
+        </form>
+
+        <div class="mt-3 text-end">
+          <a href="{{ url_for('dashboard') }}" class="btn btn-link">&larr; Wróć do dashboardu</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

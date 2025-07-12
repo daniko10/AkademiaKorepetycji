@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% block title %}Rejestracja – AK{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-7 col-lg-6">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h2 class="card-title text-center mb-4">Zarejestruj się</h2>
+
+        <form method="POST">
+          {{ form.hidden_tag() }}
+
+          <div class="mb-3">
+            <label class="form-label">Typ konta:</label><br>
+            {% for subfield in form.role %}
+              <div class="form-check form-check-inline">
+                {{ subfield(class="form-check-input") }}
+                <label class="form-check-label">{{ subfield.label.text }}</label>
+              </div>
+            {% endfor %}
+          </div>
+
+          <div class="mb-3">
+            {{ form.name.label(class="form-label") }}
+            {{ form.name(class="form-control", placeholder="Imię") }}
+          </div>
+
+          <div class="mb-3">
+            {{ form.surname.label(class="form-label") }}
+            {{ form.surname(class="form-control", placeholder="Nazwisko") }}
+          </div>
+
+          <div class="mb-3">
+            {{ form.email.label(class="form-label") }}
+            {{ form.email(class="form-control", placeholder="E-mail") }}
+          </div>
+
+          <div class="mb-3">
+            {{ form.password.label(class="form-label") }}
+            {{ form.password(class="form-control", placeholder="Hasło") }}
+          </div>
+
+          <div class="mb-3" id="subject_field">
+            {{ form.subject.label(class="form-label") }}
+            {{ form.subject(class="form-select") }}
+          </div>
+
+          <div class="d-grid">
+            {{ form.submit(class="btn btn-primary") }}
+          </div>
+        </form>
+
+        <p class="mt-3 text-center">
+          Masz już konto? <a href="{{ url_for('login') }}">Zaloguj się</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+  {{ super() }}
+  <script>
+    function toggleSubject() {
+      const role = document.querySelector('input[name="role"]:checked').value;
+      document.getElementById("subject_field").style.display = role === "teacher" ? "block" : "none";
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      document.querySelectorAll('input[name="role"]').forEach(el =>
+        el.addEventListener("change", toggleSubject)
+      );
+      toggleSubject();
+    });
+  </script>
+{% endblock %}

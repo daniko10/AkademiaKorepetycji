@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %}Oceń zadanie – {{ task.title }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-8 col-lg-6">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h2 class="card-title mb-3">Oceń zadanie:</h2>
+        <h4 class="mb-4">{{ task.title }}</h4>
+
+        <p><strong>Uczeń:</strong> {{ task.student.name }} {{ task.student.surname }}</p>
+        <p><strong>Termin:</strong> {{ task.due_date.strftime('%Y-%m-%d') }}</p>
+
+        <div class="mb-4">
+          <strong>Odpowiedź tekstowa:</strong>
+          <p class="mt-2">{{ task.student_answer or 'Brak odpowiedzi tekstowej' }}</p>
+        </div>
+
+        <form method="POST">
+          {{ form.hidden_tag() }}
+
+          <div class="mb-3">
+            {{ form.earned_points.label(class="form-label") }}
+            {{ form.earned_points(class="form-control") }}
+            <div class="form-text">Max {{ task.max_points }} pkt</div>
+          </div>
+
+          <div class="d-grid">
+            {{ form.submit(class="btn btn-success") }}
+          </div>
+        </form>
+
+        <div class="mt-3 text-end">
+          <a href="{{ url_for('dashboard') }}" class="btn btn-link">&larr; Wróć do dashboardu</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

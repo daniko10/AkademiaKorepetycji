@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}Logowanie – AK{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-6 col-lg-5">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h2 class="card-title text-center mb-4">Akademia Korepetycji</h2>
+        <form method="POST">
+          {{ form.hidden_tag() }}
+
+          <div class="mb-3">
+            {{ form.email.label(class="form-label") }}
+            {{ form.email(class="form-control", placeholder="Twój e-mail") }}
+          </div>
+
+          <div class="mb-3">
+            {{ form.password.label(class="form-label") }}
+            {{ form.password(class="form-control", placeholder="Hasło") }}
+          </div>
+
+          <div class="d-grid">
+            {{ form.submit(class="btn btn-primary") }}
+          </div>
+        </form>
+
+        <p class="mt-3 text-center">
+          Nie masz konta? 
+          <a href="{{ url_for('register') }}">Zarejestruj się</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

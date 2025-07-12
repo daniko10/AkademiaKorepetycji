@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block title %}Panel Administratora – Oczekujące konta{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-8">
+    <div class="card mb-4 shadow-sm">
+      <div class="card-body">
+        <h1 class="card-title mb-3">Niezatwierdzeni użytkownicy</h1>
+
+        <h4 class="mt-4">Studenci</h4>
+        {% if students %}
+          <ul class="list-group mb-4">
+            {% for s in students %}
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                {{ s.name }} {{ s.surname }}<br>
+                <small class="text-muted">{{ s.email }}</small>
+                <a href="{{ url_for('approve_user', user_type='student', user_id=s.id) }}"
+                   class="btn btn-sm btn-success">Zatwierdź</a>
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p class="text-muted">Brak niezatwierdzonych studentów.</p>
+        {% endif %}
+
+        <h4 class="mt-4">Nauczyciele</h4>
+        {% if teachers %}
+          <ul class="list-group mb-4">
+            {% for t in teachers %}
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                {{ t.name }} {{ t.surname }}<br>
+                <small class="text-muted">{{ t.email }}</small>
+                <a href="{{ url_for('approve_user', user_type='teacher', user_id=t.id) }}"
+                   class="btn btn-sm btn-success">Zatwierdź</a>
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p class="text-muted">Brak niezatwierdzonych nauczycieli.</p>
+        {% endif %}
+
+        <div class="text-end">
+          <a href="{{ url_for('logout') }}" class="btn btn-secondary">Wyloguj się</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

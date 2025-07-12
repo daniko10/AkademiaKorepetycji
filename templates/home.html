@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}Strona główna – AK{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-column justify-content-center align-items-center" style="min-height:60vh">
+  <h1 class="display-4 mb-4">Witaj na Akademii Korepetycji</h1>
+  <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+    <a href="{{ url_for('login') }}" class="btn btn-primary btn-lg">Logowanie</a>
+    <a href="{{ url_for('register') }}" class="btn btn-outline-secondary btn-lg">Rejestracja</a>
+  </div>
+</div>
+{% endblock %}
