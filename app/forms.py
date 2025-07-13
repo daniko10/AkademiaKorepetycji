@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, RadioField, SelectField, TextAreaField, DateTimeField, IntegerField, FileField
+from wtforms import StringField, PasswordField, SubmitField, RadioField, SelectField, TextAreaField, DateTimeField, IntegerField, MultipleFileField
 from wtforms.validators import InputRequired, Email, Length, ValidationError
 from wtforms.validators import NumberRange
 from flask_wtf.file import FileField, FileAllowed
@@ -39,17 +39,17 @@ class AssignTaskForm(FlaskForm):
     description = TextAreaField('Opis zadania')
     due_date = DateTimeField('Termin wykonania (RRRR-MM-DD)', format='%Y-%m-%d', validators=[InputRequired()])
     max_points = IntegerField('Maksymalna liczba punktów', validators=[InputRequired(), NumberRange(min=1, max=100)])
-    attachment  = FileField(
+    attachments  = MultipleFileField(
         'Załącznik od nauczyciela (PDF, PNG, JPG)',
-        validators=[FileAllowed(['pdf', 'png', 'jpg', 'jpeg'], 'Dozwolone tylko PDF lub obrazy')], render_kw={'accept': '.pdf,.png,.jpg,.jpeg'}
+        validators=[FileAllowed(['pdf', 'png', 'jpg', 'jpeg'], 'Dozwolone tylko PDF lub obrazy')], render_kw={'multiple' : True, 'accept': '.pdf,.png,.jpg,.jpeg'}
     )
     submit = SubmitField('Utwórz zadanie')
 
 class TaskSubmissionForm(FlaskForm):
     answer = TextAreaField('Odpowiedź', validators=[InputRequired(), Length(min=3, max=500)])
-    attachment  = FileField(
+    attachments  = MultipleFileField(
         'Załącznik od studenta (PDF, PNG, JPG)',
-        validators=[FileAllowed(['pdf', 'png', 'jpg', 'jpeg'], 'Dozwolone tylko PDF lub obrazy')], render_kw={'accept': '.pdf,.png,.jpg,.jpeg'}
+        validators=[FileAllowed(['pdf', 'png', 'jpg', 'jpeg'], 'Dozwolone tylko PDF lub obrazy')], render_kw={'multiple' : True, 'accept': '.pdf,.png,.jpg,.jpeg'}
     )
     submit = SubmitField('Prześlij zadanie')
 

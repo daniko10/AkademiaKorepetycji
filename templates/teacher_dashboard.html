@@ -60,12 +60,15 @@
                   <span class="badge bg-warning text-dark">Nieoddane</span>
                   {% endif %}
                 </div>
-                {% if task.student_attachment %}
-                <a
-                  href="{{ url_for('download_file', filename=task.student_attachment) }}"
-                  class="btn btn-sm btn-outline-primary">
-                  📥 Pobierz załącznik ucznia
-                </a>
+                {% if task.submission_list %}
+                  <p class="mt-2">Załączniki od ucznia:</p>
+                  <ul class="list-group mb-2">
+                    {% for fn in task.submission_list %}
+                      <li class="list-group-item py-1">
+                        <a href="{{ url_for('download_file', filename=fn) }}">{{ fn }}</a>
+                      </li>
+                    {% endfor %}
+                  </ul>
                 {% endif %}
               </li>
               {% endfor %}

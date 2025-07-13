@@ -29,14 +29,15 @@
               Zlecone przez: {{ task.teacher.name }} {{ task.teacher.surname }}
             </small>
 
-            {% if task.teacher_attachment %}
-            <div class="mt-2">
-              <a
-                href="{{ url_for('download_file', filename=task.teacher_attachment) }}"
-                class="btn btn-sm btn-outline-primary">
-                📥 Pobierz załącznik
-              </a>
-            </div>
+            {% if task.attachment_list %}
+              <p class="mt-2">Załączniki od nauczyciela:</p>
+              <ul class="list-group mb-2">
+                {% for fn in task.attachment_list %}
+                  <li class="list-group-item py-1">
+                    <a href="{{ url_for('download_file', filename=fn) }}">{{ fn }}</a>
+                  </li>
+                {% endfor %}
+              </ul>
             {% endif %}
 
             <div class="mt-3">

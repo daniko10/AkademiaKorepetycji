@@ -4,6 +4,7 @@ from app import app, db, bcrypt, login_manager
 from app.forms import LoginForm, RegisterForm, AssignTaskForm, TaskSubmissionForm, GradeTaskForm
 from app.models import Student, Teacher, Task, Administrator
 import os
+import json
 from werkzeug.utils import secure_filename
 from datetime import datetime
 
@@ -89,14 +90,30 @@ def register():
 @login_required
 def dashboard():
     if isinstance(current_user, Teacher):
-        students = current_user.students  
+        students = current_user.students  # Twoi uczniowie
+
+        # Dla każdego zadania każdego ucznia: dekoduj listy załączników
+        for student in students:
+            # bierzemy tylko zadania tego nauczyciela
+            student_tasks = [t for t in student.tasks if t.teacher_id == current_user.id]
+            for t in student_tasks:
+                # dekoduj załączniki od nauczyciela
+                t.attachment_list  = json.loads(t.teacher_attachments  or '[]')
+                # dekoduj załączniki od ucznia
+                t.submission_list  = json.loads(t.student_attachments or '[]')
+
         return render_template('teacher_dashboard.html',
                                teacher=current_user,
                                students=students)
 
     elif isinstance(current_user, Student):
         tasks = Task.query.filter_by(student_id=current_user.id).all()
-        return render_template('student_dashboard.html', student=current_user, tasks=tasks)
+        for t in tasks:
+            t.attachment_list = json.loads(t.teacher_attachments  or '[]')
+            t.submission_list = json.loads(t.student_attachments or '[]')
+        return render_template('student_dashboard.html',
+                               student=current_user,
+                               tasks=tasks)
 
     elif isinstance(current_user, Administrator):
         return redirect(url_for('admin_dashboard'))
@@ -113,16 +130,13 @@ def assign_task(student_id):
     form = AssignTaskForm()
 
     if form.validate_on_submit():
-        filename = None
-
-        if form.attachment.data:
-            filename = secure_filename(form.attachment.data.filename)
-            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            form.attachment.data.save(filepath)
-            teacher_attachment_path = filename
-        else:
-            teacher_attachment_path = None
-
+        filenames = []
+        for file_storage in form.attachments.data:
+            if file_storage:
+                filename = secure_filename(file_storage.filename)
+                filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                file_storage.save(filepath)
+                filenames.append(filename)
         task = Task(
             title=form.title.data,
             description=form.description.data,
@@ -131,11 +145,10 @@ def assign_task(student_id):
             student_id=student.id,
             teacher_id=current_user.id,
             issued_at=datetime.utcnow(),
-            teacher_attachment=teacher_attachment_path
+            teacher_attachments=json.dumps(filenames)
         )
         db.session.add(task)
         db.session.commit()
-
         return redirect(url_for('dashboard'))
 
     return render_template('assign_task.html', form=form, student=student)
@@ -149,17 +162,16 @@ def submit_task(task_id):
     form = TaskSubmissionForm()
 
     if form.validate_on_submit():
-        filename = None
-        if form.attachment.data:
-            filename = secure_filename(form.attachment.data.filename)
-            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            form.attachment.data.save(filepath)
-            student_attachment_path = filename
-        else:
-            student_attachment_path = None
+        filenames = []
+        for file_storage in form.attachments.data:
+            if file_storage:
+                fname = secure_filename(file_storage.filename)
+                filepath = os.path.join(app.config['UPLOAD_FOLDER'], fname)
+                file_storage.save(filepath)
+                filenames.append(fname)
         
         task.student_answer = form.answer.data
-        task.student_attachment = student_attachment_path
+        task.student_attachments = json.dumps(filenames)
         task.earned_points = None
         task.submitted = True
         db.session.commit()

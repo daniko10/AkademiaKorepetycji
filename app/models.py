@@ -1,5 +1,6 @@
 from app import db
 from flask_login import UserMixin
+from sqlalchemy import Text
 from datetime import datetime
 
 class UserBase(db.Model):
@@ -35,8 +36,8 @@ class Task(db.Model):
     student = db.relationship('Student', backref='tasks', lazy=True)
     teacher = db.relationship('Teacher', backref='assigned_tasks', lazy=True)
     student_answer = db.Column(db.Text, nullable=True)
-    teacher_attachment = db.Column(db.String(255), nullable=True)
-    student_attachment = db.Column(db.String(255), nullable=True)
+    teacher_attachments = db.Column(Text, nullable=True)
+    student_attachments = db.Column(Text, nullable=True)
     submitted = db.Column(db.Boolean, default=False)
 
 class Administrator(UserBase, UserMixin):
