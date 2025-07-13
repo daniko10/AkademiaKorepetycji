@@ -3,10 +3,11 @@ from flask_login import login_user, logout_user, login_required, current_user
 from app import app, db, bcrypt, login_manager
 from app.forms import LoginForm, RegisterForm, AssignTaskForm, TaskSubmissionForm, GradeTaskForm
 from app.models import Student, Teacher, Task, Administrator
-import os
-import json
 from werkzeug.utils import secure_filename
 from datetime import datetime
+from app.utils import compress_file
+import os
+import json
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -136,6 +137,7 @@ def assign_task(student_id):
                 filename = secure_filename(file_storage.filename)
                 filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
                 file_storage.save(filepath)
+                compress_file(filepath)
                 filenames.append(filename)
         task = Task(
             title=form.title.data,
@@ -168,6 +170,7 @@ def submit_task(task_id):
                 fname = secure_filename(file_storage.filename)
                 filepath = os.path.join(app.config['UPLOAD_FOLDER'], fname)
                 file_storage.save(filepath)
+                compress_file(filepath)
                 filenames.append(fname)
         
         task.student_answer = form.answer.data
