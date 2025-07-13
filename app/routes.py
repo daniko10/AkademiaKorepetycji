@@ -99,7 +99,7 @@ def dashboard():
         return render_template('student_dashboard.html', student=current_user, tasks=tasks)
 
     elif isinstance(current_user, Administrator):
-        return admin_dashboard()
+        return redirect(url_for('admin_dashboard'))
 
     return "Nieznany typ użytkownika", 400
 

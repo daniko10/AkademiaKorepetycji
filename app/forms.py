@@ -39,12 +39,18 @@ class AssignTaskForm(FlaskForm):
     description = TextAreaField('Opis zadania')
     due_date = DateTimeField('Termin wykonania (RRRR-MM-DD)', format='%Y-%m-%d', validators=[InputRequired()])
     max_points = IntegerField('Maksymalna liczba punktów', validators=[InputRequired(), NumberRange(min=1, max=100)])
-    attachment = FileField('Załącznik od nauczyciela (PDF)', validators=[FileAllowed(['pdf'])])
+    attachment  = FileField(
+        'Załącznik od nauczyciela (PDF, PNG, JPG)',
+        validators=[FileAllowed(['pdf', 'png', 'jpg', 'jpeg'], 'Dozwolone tylko PDF lub obrazy')], render_kw={'accept': '.pdf,.png,.jpg,.jpeg'}
+    )
     submit = SubmitField('Utwórz zadanie')
 
 class TaskSubmissionForm(FlaskForm):
     answer = TextAreaField('Odpowiedź', validators=[InputRequired(), Length(min=3, max=500)])
-    attachment = FileField('Załącznik do zadania (PDF)', validators=[FileAllowed(['pdf'])])
+    attachment  = FileField(
+        'Załącznik od studenta (PDF, PNG, JPG)',
+        validators=[FileAllowed(['pdf', 'png', 'jpg', 'jpeg'], 'Dozwolone tylko PDF lub obrazy')], render_kw={'accept': '.pdf,.png,.jpg,.jpeg'}
+    )
     submit = SubmitField('Prześlij zadanie')
 
 class GradeTaskForm(FlaskForm):
