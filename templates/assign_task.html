@@ -27,7 +27,7 @@ endblock %}
           <div class="row">
             <div class="col-md-6 mb-3">
               {{ form.due_date.label(class="form-label") }}
-              {{ form.due_date(class="form-control") }}
+              {{ form.due_date(class="form-control", min=min_date) }}
             </div>
             <div class="col-md-6 mb-3">
               {{ form.max_points.label(class="form-label") }}

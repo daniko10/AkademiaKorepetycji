@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, RadioField, SelectField, TextAreaField, DateTimeField, IntegerField, MultipleFileField
+from wtforms import StringField, PasswordField, SubmitField, RadioField, SelectField, TextAreaField, DateField, IntegerField, MultipleFileField
 from wtforms.validators import InputRequired, Email, Length, ValidationError
 from wtforms.validators import NumberRange
 from flask_wtf.file import FileField, FileAllowed
@@ -37,7 +37,7 @@ class LoginForm(FlaskForm):
 class AssignTaskForm(FlaskForm):
     title = StringField('Tytuł zadania', validators=[InputRequired(), Length(min=3, max=100)])
     description = TextAreaField('Opis zadania')
-    due_date = DateTimeField('Termin wykonania (RRRR-MM-DD)', format='%Y-%m-%d', validators=[InputRequired()])
+    due_date = DateField('Termin wykonania', format='%Y-%m-%d', validators=[InputRequired()], render_kw={'type':'date'})
     max_points = IntegerField('Maksymalna liczba punktów', validators=[InputRequired(), NumberRange(min=1, max=100)])
     attachments  = MultipleFileField(
         'Załącznik od nauczyciela (PDF, PNG, JPG)',

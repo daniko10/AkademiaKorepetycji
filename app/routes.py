@@ -6,19 +6,21 @@ from app.models import Student, Teacher, Task, Administrator
 from werkzeug.utils import secure_filename
 from datetime import datetime
 from app.utils import compress_file
+from datetime import date
 import os
 import json
+
 
 @login_manager.user_loader
 def load_user(user_id):
     role = session.get('role')
-
-    if role == 'teacher':
-        return Teacher.query.get(int(user_id))
-    elif role == 'student':
-        return Student.query.get(int(user_id))
-    elif role == 'administrator':
-        return Administrator.query.get(int(user_id))
+    match role:
+        case 'student':
+            return Student.query.get(int(user_id))
+        case 'teacher':
+            return Teacher.query.get(int(user_id))
+        case 'administrator':
+            return Administrator.query.get(int(user_id))
     return None
 
 @app.route('/')
@@ -56,6 +58,7 @@ def register():
         existing_user = Student.query.filter_by(email=form.email.data).first()
         if not existing_user:
             existing_user = Teacher.query.filter_by(email=form.email.data).first()
+        
         if not existing_user:
             existing_user = Administrator.query.filter_by(email=form.email.data).first()
 
@@ -91,16 +94,12 @@ def register():
 @login_required
 def dashboard():
     if isinstance(current_user, Teacher):
-        students = current_user.students  # Twoi uczniowie
+        students = current_user.students
 
-        # Dla każdego zadania każdego ucznia: dekoduj listy załączników
         for student in students:
-            # bierzemy tylko zadania tego nauczyciela
             student_tasks = [t for t in student.tasks if t.teacher_id == current_user.id]
             for t in student_tasks:
-                # dekoduj załączniki od nauczyciela
                 t.attachment_list  = json.loads(t.teacher_attachments  or '[]')
-                # dekoduj załączniki od ucznia
                 t.submission_list  = json.loads(t.student_attachments or '[]')
 
         return render_template('teacher_dashboard.html',
@@ -152,8 +151,9 @@ def assign_task(student_id):
         db.session.add(task)
         db.session.commit()
         return redirect(url_for('dashboard'))
-
-    return render_template('assign_task.html', form=form, student=student)
+    
+    today_iso = date.today().isoformat()
+    return render_template('assign_task.html', form=form, student=student, min_date=today_iso)
 
 @app.route('/submit-task/<int:task_id>', methods=['GET', 'POST'])
 @login_required

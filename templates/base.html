@@ -26,14 +26,6 @@
             <li class="nav-item">
               <a class="nav-link" href="{{ url_for('logout') }}">Wyloguj</a>
             </li>
-            {% else %}
-            <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('login') }}">Logowanie</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link"
-                href="{{ url_for('register') }}">Rejestracja</a>
-            </li>
             {% endif %}
           </ul>
         </div>
