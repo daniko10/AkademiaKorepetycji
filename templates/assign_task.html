@@ -1,12 +1,14 @@
 {% extends 'base.html' %}
-{% block title %}Nowe zadanie – {{ student.name }} {{ student.surname }}{% endblock %}
+{% block title %}Nowe zadanie – {{ student.name }} {{ student.surname }}{%
+endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
   <div class="col-12 col-md-10 col-lg-8 col-xl-6">
     <div class="card shadow-sm">
       <div class="card-body">
-        <h2 class="card-title mb-4">Nowe zadanie dla {{ student.name }} {{ student.surname }}</h2>
+        <h2 class="card-title mb-4">Nowe zadanie dla {{ student.name }} {{
+          student.surname }}</h2>
 
         <form method="POST" enctype="multipart/form-data">
           {{ form.hidden_tag() }}
@@ -18,7 +20,8 @@
 
           <div class="mb-3">
             {{ form.description.label(class="form-label") }}
-            {{ form.description(class="form-control", rows=4, placeholder="Opis zadania (opcjonalnie)") }}
+            {{ form.description(class="form-control", rows=4,
+            placeholder="Opis zadania (opcjonalnie)") }}
           </div>
 
           <div class="row">
@@ -44,7 +47,8 @@
         </form>
 
         <div class="mt-3 text-end">
-          <a href="{{ url_for('dashboard') }}" class="btn btn-link">&larr; Wróć do dashboardu</a>
+          <a href="{{ url_for('dashboard') }}" class="btn btn-link">&larr; Wróć
+            do dashboardu</a>
         </div>
       </div>
     </div>

@@ -13,6 +13,8 @@ class UserBase(db.Model):
 class Student(UserBase, UserMixin):
     __tablename__ = 'students'
     approved = db.Column(db.Boolean, default=False)
+    teacher_id = db.Column(db.Integer, db.ForeignKey('teachers.id'), nullable=True)
+    teacher    = db.relationship('Teacher', backref='students', lazy=True)
 
 class Teacher(UserBase, UserMixin):
     __tablename__ = 'teachers'

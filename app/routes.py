@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for, session, flash, send_from_directory
+from flask import render_template, redirect, url_for, session, flash, send_from_directory, request
 from flask_login import login_user, logout_user, login_required, current_user
 from app import app, db, bcrypt, login_manager
 from app.forms import LoginForm, RegisterForm, AssignTaskForm, TaskSubmissionForm, GradeTaskForm
@@ -88,17 +88,18 @@ def register():
 @app.route('/dashboard')
 @login_required
 def dashboard():
-    print(f"Current user: {current_user}, Role: {session.get('role')}")
     if isinstance(current_user, Teacher):
-        students = Student.query.all()
-        return render_template('teacher_dashboard.html', teacher=current_user, students=students)
+        students = current_user.students  
+        return render_template('teacher_dashboard.html',
+                               teacher=current_user,
+                               students=students)
 
     elif isinstance(current_user, Student):
         tasks = Task.query.filter_by(student_id=current_user.id).all()
         return render_template('student_dashboard.html', student=current_user, tasks=tasks)
 
     elif isinstance(current_user, Administrator):
-        return pending_users()
+        return admin_dashboard()
 
     return "Nieznany typ użytkownika", 400
 
@@ -196,15 +197,75 @@ def download_file(filename):
     uploads_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), '..', 'uploads')
     return send_from_directory(uploads_dir, filename, as_attachment=True)
 
-@app.route('/admin/pending')
+@app.route('/admin/dashboard', methods=['GET','POST'])
 @login_required
-def pending_users():
+def admin_dashboard():
     if not isinstance(current_user, Administrator):
         return "Brak dostępu", 403
 
-    students = Student.query.filter_by(approved=False).all()
-    teachers = Teacher.query.filter_by(approved=False).all()
-    return render_template('admin_dashboard.html', students=students, teachers=teachers)
+    pending_students   = Student.query.filter_by(approved=False).all()
+    pending_teachers   = Teacher.query.filter_by(approved=False).all()
+    unassigned_students = Student.query.filter_by(approved=True, teacher_id=None).all()
+    assigned_students = Student.query.filter_by(approved=True).all()
+    approved_teachers  = Teacher.query.filter_by(approved=True).all()
+
+    if request.method == 'POST':
+        action = request.form.get('action')
+
+        if action == 'approve_student':
+            sid = int(request.form['student_id'])
+            student = Student.query.get_or_404(sid)
+            student.approved = True
+            db.session.commit()
+            flash(f"Studenta {student.name} zatwierdzono.", "success")
+
+        elif action == 'approve_teacher':
+            tid = int(request.form['teacher_id'])
+            teacher = Teacher.query.get_or_404(tid)
+            teacher.approved = True
+            db.session.commit()
+            flash(f"Nauczyciela {teacher.name} zatwierdzono.", "success")
+
+        elif action == 'assign_student':
+            sid = int(request.form['student_id'])
+            tid = int(request.form['teacher_id'])
+            student = Student.query.get_or_404(sid)
+            teacher = Teacher.query.get_or_404(tid)
+            student.teacher_id = tid
+            db.session.commit()
+            flash(f"Studenta {student.name} przypisano do nauczyciela {teacher.name}.", "success")
+
+        elif action == 'delete_student':
+            sid = int(request.form['student_id'])
+            student = Student.query.get_or_404(sid)
+            db.session.delete(student)
+            db.session.commit()
+            flash(f"Studenta {student.name} usunięto z systemu.", "warning")
+
+        elif action == 'delete_teacher':
+            tid = int(request.form['teacher_id'])
+            teacher = Teacher.query.get_or_404(tid)
+            for s in teacher.students:
+                s.teacher_id = None
+            db.session.delete(teacher)
+            db.session.commit()
+            flash(f"Nauczyciela {teacher.name} usunięto z systemu.", "warning")
+
+        elif action == 'unassign_student':
+            sid = int(request.form['student_id'])
+            student = Student.query.get_or_404(sid)
+            student.teacher_id = None
+            db.session.commit()
+            flash(f"Ucznia {student.name} odłączono od nauczyciela.", "warning")
+        
+        return redirect(url_for('admin_dashboard'))
+
+    return render_template('admin_dashboard.html',
+                           pending_students=pending_students,
+                           pending_teachers=pending_teachers,
+                           unassigned_students=unassigned_students,
+                           assigned_students=assigned_students,
+                           approved_teachers=approved_teachers)
 
 @app.route('/admin/approve/<string:user_type>/<int:user_id>')
 @login_required
@@ -217,8 +278,7 @@ def approve_user(user_type, user_id):
     user.approved = True
     db.session.commit()
     flash("Użytkownik zatwierdzony!", "success")
-    return redirect(url_for('pending_users'))
-
+    return redirect(url_for('admin_dashboard'))
 
 @app.route('/logout')
 @login_required

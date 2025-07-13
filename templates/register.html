@@ -14,10 +14,10 @@
           <div class="mb-3">
             <label class="form-label">Typ konta:</label><br>
             {% for subfield in form.role %}
-              <div class="form-check form-check-inline">
-                {{ subfield(class="form-check-input") }}
-                <label class="form-check-label">{{ subfield.label.text }}</label>
-              </div>
+            <div class="form-check form-check-inline">
+              {{ subfield(class="form-check-input") }}
+              <label class="form-check-label">{{ subfield.label.text }}</label>
+            </div>
             {% endfor %}
           </div>
 
@@ -61,8 +61,8 @@
 {% endblock %}
 
 {% block scripts %}
-  {{ super() }}
-  <script>
+{{ super() }}
+<script>
     function toggleSubject() {
       const role = document.querySelector('input[name="role"]:checked').value;
       document.getElementById("subject_field").style.display = role === "teacher" ? "block" : "none";

@@ -4,88 +4,90 @@
 {% block content %}
 <div class="row justify-content-center">
   <div class="col-lg-8">
-    <!-- Info o nauczycielu -->
     <div class="card shadow-sm mb-4">
       <div class="card-body">
-        <h2 class="card-title">Witaj, {{ teacher.name }} {{ teacher.surname }}!</h2>
+        <h2 class="card-title">Witaj, {{ teacher.name }} {{ teacher.surname
+          }}!</h2>
         <p class="text-muted mb-0">Przedmiot: {{ teacher.subject }}</p>
       </div>
     </div>
 
-    <!-- Lista uczniów i ich zadań -->
     <div class="accordion" id="studentsAccordion">
       {% if students %}
-        {% for student in students %}
-          <div class="accordion-item mb-2">
-            <h2 class="accordion-header" id="heading-{{ student.id }}">
-              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                      data-bs-target="#collapse-{{ student.id }}" aria-expanded="false"
-                      aria-controls="collapse-{{ student.id }}">
-                {{ student.name }} {{ student.surname }} ({{ student.email }})
-              </button>
-            </h2>
-            <div id="collapse-{{ student.id }}" class="accordion-collapse collapse"
-                 aria-labelledby="heading-{{ student.id }}" data-bs-parent="#studentsAccordion">
-              <div class="accordion-body">
-                <div class="d-flex justify-content-end mb-3">
-                  <a href="{{ url_for('assign_task', student_id=student.id) }}"
-                     class="btn btn-light-blue me-2">➕ Przypisz nowe zadanie</a>
-                  <button type="button"
-                          class="btn btn-light-blue"
-                          data-bs-toggle="modal"
-                          data-bs-target="#wbModal-{{ student.id }}">
-                    🖌️ Tablica
-                  </button>
-                </div>
-
-                {% set tasks = student.tasks|selectattr("teacher_id", "equalto", teacher.id)|list %}
-                {% if tasks %}
-                  <ul class="list-group">
-                    {% for task in tasks %}
-                      <li class="list-group-item">
-                        <div class="d-flex w-100 justify-content-between align-items-center">
-                          <h5 class="mb-1">{{ task.title }}</h5>
-                          <small>Termin: {{ task.due_date.strftime('%Y-%m-%d') }}</small>
-                        </div>
-                        <p class="mb-1">{{ task.description or '— brak opisu —' }}</p>
-                        <div class="mb-2">
-                          {% if task.submitted %}
-                            <span class="badge bg-success">Oddane</span>
-                            {% if task.earned_points is not none %}
-                              <span class="badge bg-info">Ocenione: {{ task.earned_points }}/{{ task.max_points }}</span>
-                            {% else %}
-                              <a href="{{ url_for('grade_task', task_id=task.id) }}"
-                                 class="btn btn-sm btn-outline-secondary ms-2">✏️ Oceń</a>
-                            {% endif %}
-                          {% else %}
-                            <span class="badge bg-warning text-dark">Nieoddane</span>
-                          {% endif %}
-                        </div>
-                        {% if task.student_attachment %}
-                          <a href="{{ url_for('download_file', filename=task.student_attachment) }}"
-                             class="btn btn-sm btn-outline-primary">
-                            📥 Pobierz załącznik ucznia
-                          </a>
-                        {% endif %}
-                      </li>
-                    {% endfor %}
-                  </ul>
-                {% else %}
-                  <p class="text-muted mb-0">Brak zadań przypisanych temu uczniowi.</p>
-                {% endif %}
-              </div>
+      {% for student in students %}
+      <div class="accordion-item mb-2">
+        <h2 class="accordion-header" id="heading-{{ student.id }}">
+          <button class="accordion-button collapsed" type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#collapse-{{ student.id }}" aria-expanded="false"
+            aria-controls="collapse-{{ student.id }}">
+            {{ student.name }} {{ student.surname }} ({{ student.email }})
+          </button>
+        </h2>
+        <div id="collapse-{{ student.id }}" class="accordion-collapse collapse"
+          aria-labelledby="heading-{{ student.id }}"
+          data-bs-parent="#studentsAccordion">
+          <div class="accordion-body">
+            <div class="d-flex justify-content-end mb-3">
+              <a href="{{ url_for('assign_task', student_id=student.id) }}"
+                class="btn btn-light-blue me-2">➕ Przypisz nowe zadanie</a>
             </div>
+
+            {% set tasks = student.tasks|selectattr("teacher_id", "equalto",
+            teacher.id)|list %}
+            {% if tasks %}
+            <ul class="list-group">
+              {% for task in tasks %}
+              <li class="list-group-item">
+                <div
+                  class="d-flex w-100 justify-content-between align-items-center">
+                  <h5 class="mb-1">{{ task.title }}</h5>
+                  <small>Termin: {{ task.due_date.strftime('%Y-%m-%d')
+                    }}</small>
+                </div>
+                <p class="mb-1">{{ task.description or '— brak opisu —' }}</p>
+                <div class="mb-2">
+                  {% if task.submitted %}
+                  <span class="badge bg-success">Oddane</span>
+                  {% if task.earned_points is not none %}
+                  <span class="badge bg-info">Ocenione: {{ task.earned_points
+                    }}/{{ task.max_points }}</span>
+                  {% else %}
+                  <a href="{{ url_for('grade_task', task_id=task.id) }}"
+                    class="btn btn-sm btn-outline-secondary ms-2">✏️ Oceń</a>
+                  {% endif %}
+                  {% else %}
+                  <span class="badge bg-warning text-dark">Nieoddane</span>
+                  {% endif %}
+                </div>
+                {% if task.student_attachment %}
+                <a
+                  href="{{ url_for('download_file', filename=task.student_attachment) }}"
+                  class="btn btn-sm btn-outline-primary">
+                  📥 Pobierz załącznik ucznia
+                </a>
+                {% endif %}
+              </li>
+              {% endfor %}
+            </ul>
+            {% else %}
+            <p class="text-muted mb-0">Brak zadań przypisanych temu
+              uczniowi.</p>
+            {% endif %}
           </div>
-        {% endfor %}
-      {% else %}
-        <div class="alert alert-secondary">
-          Brak uczniów w systemie.
         </div>
+      </div>
+      {% endfor %}
+      {% else %}
+      <div class="alert alert-secondary">
+        Brak uczniów w systemie.
+      </div>
       {% endif %}
     </div>
 
     <div class="text-end mt-4">
-      <a href="{{ url_for('logout') }}" class="btn btn-secondary">Wyloguj się</a>
+      <a href="{{ url_for('logout') }}" class="btn btn-secondary">Wyloguj
+        się</a>
     </div>
   </div>
 </div>
