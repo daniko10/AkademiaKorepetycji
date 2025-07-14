@@ -3,6 +3,7 @@ from flask_login import login_user, logout_user, login_required, current_user
 from app import app, db, bcrypt, login_manager
 from app.forms import LoginForm, RegisterForm, AssignTaskForm, TaskSubmissionForm, GradeTaskForm
 from app.models import Student, Teacher, Task, Administrator
+from sqlalchemy import and_, not_
 from werkzeug.utils import secure_filename
 from datetime import datetime
 from app.utils import compress_file
@@ -220,8 +221,14 @@ def admin_dashboard():
 
     pending_students   = Student.query.filter_by(approved=False).all()
     pending_teachers   = Teacher.query.filter_by(approved=False).all()
-    unassigned_students = Student.query.filter_by(approved=True, teacher_id=None).all()
-    assigned_students = Student.query.filter_by(approved=True).all()
+    unassigned_students = Student.query \
+    .filter(and_(Student.approved == True,
+                 not_(Student.teachers.any()))) \
+    .all()
+    assigned_students = Student.query \
+    .filter(and_(Student.approved == True,
+                 Student.teachers.any())) \
+    .all()
     approved_teachers  = Teacher.query.filter_by(approved=True).all()
 
     if request.method == 'POST':
@@ -243,12 +250,11 @@ def admin_dashboard():
 
         elif action == 'assign_student':
             sid = int(request.form['student_id'])
-            tid = int(request.form['teacher_id'])
-            student = Student.query.get_or_404(sid)
-            teacher = Teacher.query.get_or_404(tid)
-            student.teacher_id = tid
+            tid_list = request.form.getlist('teacher_ids', type=int)
+            s = Student.query.get_or_404(sid)
+            s.teachers = Teacher.query.filter(Teacher.id.in_(tid_list)).all()
             db.session.commit()
-            flash(f"Studenta {student.name} przypisano do nauczyciela {teacher.name}.", "success")
+            flash(f"Studenta {s.name} przypisano do wybranych nauczycieli.", "success")
 
         elif action == 'delete_student':
             sid = int(request.form['student_id'])
@@ -268,11 +274,25 @@ def admin_dashboard():
 
         elif action == 'unassign_student':
             sid = int(request.form['student_id'])
+            tid = int(request.form['teacher_id'])
             student = Student.query.get_or_404(sid)
-            student.teacher_id = None
+            teacher = Teacher.query.get_or_404(tid)
+
+            if teacher in student.teachers:
+                student.teachers.remove(teacher)
+                db.session.commit()
+                flash(f"Ucznia {student.name} odłączono od nauczyciela {teacher.name}.", "warning")
+            else:
+                flash("Ten uczeń nie był przypisany do tego nauczyciela.", "info")
+
+        elif action == 'update_teachers':
+            sid = int(request.form['student_id'])
+            tid_list = request.form.getlist('teacher_ids', type=int)
+            student = Student.query.get_or_404(sid)
+            student.teachers = Teacher.query.filter(Teacher.id.in_(tid_list)).all()
             db.session.commit()
-            flash(f"Ucznia {student.name} odłączono od nauczyciela.", "warning")
-        
+            flash(f"Przypisania nauczycieli zaktualizowano dla {student.name}.", "success")
+
         return redirect(url_for('admin_dashboard'))
 
     return render_template('admin_dashboard.html',

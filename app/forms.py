@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, RadioField, SelectField, TextAreaField, DateField, IntegerField, MultipleFileField
+from wtforms import StringField, PasswordField, SubmitField, RadioField, SelectField, TextAreaField, DateField, IntegerField, MultipleFileField, HiddenField, SelectMultipleField
 from wtforms.validators import InputRequired, Email, Length, ValidationError
 from wtforms.validators import NumberRange
 from flask_wtf.file import FileField, FileAllowed
@@ -59,3 +59,12 @@ class GradeTaskForm(FlaskForm):
         NumberRange(min=0, max=100, message="Punkty muszą być w zakresie 0–100")
     ])
     submit = SubmitField("Zapisz ocenę")
+
+class AssignStudentForm(FlaskForm):
+    student_id  = HiddenField(validators=[InputRequired()])
+    teacher_ids = SelectMultipleField(
+        'Wybierz nauczycieli',
+        coerce=int,
+        validators=[InputRequired()]
+    )
+    submit = SubmitField('Zapisz')

@@ -11,16 +11,30 @@ class UserBase(db.Model):
     email = db.Column(db.String(30), unique=True, nullable=False)
     password = db.Column(db.String(128), nullable=False)
 
+student_teacher = db.Table(
+    'student_teacher',
+    db.Column('student_id', db.Integer, db.ForeignKey('students.id'), primary_key=True),
+    db.Column('teacher_id', db.Integer, db.ForeignKey('teachers.id'), primary_key=True)
+)
+
 class Student(UserBase, UserMixin):
     __tablename__ = 'students'
     approved = db.Column(db.Boolean, default=False)
-    teacher_id = db.Column(db.Integer, db.ForeignKey('teachers.id'), nullable=True)
-    teacher    = db.relationship('Teacher', backref='students', lazy=True)
+    teachers = db.relationship(
+        'Teacher',
+        secondary=student_teacher,
+        back_populates='students'
+    )
 
 class Teacher(UserBase, UserMixin):
     __tablename__ = 'teachers'
     subject = db.Column(db.String(50))
     approved = db.Column(db.Boolean, default=False)
+    students = db.relationship(
+        'Student',
+        secondary=student_teacher,
+        back_populates='teachers'
+    )
 
 class Task(db.Model):
     __tablename__ = 'tasks'
