@@ -109,12 +109,14 @@ def dashboard():
 
     elif isinstance(current_user, Student):
         tasks = Task.query.filter_by(student_id=current_user.id).all()
+        teachers = current_user.teachers
         for t in tasks:
             t.attachment_list = json.loads(t.teacher_attachments  or '[]')
             t.submission_list = json.loads(t.student_attachments or '[]')
         return render_template('student_dashboard.html',
                                student=current_user,
-                               tasks=tasks)
+                               tasks=tasks,
+                               teachers=teachers)
 
     elif isinstance(current_user, Administrator):
         return redirect(url_for('admin_dashboard'))
@@ -328,15 +330,15 @@ def chat(student_id, teacher_id, role):
         db.or_(
             db.and_(
                 Message.sender_id == student_id,
-                Message.sender_role == sender_role,
+                Message.sender_role == 'student',
                 Message.receiver_id == teacher_id,
-                Message.receiver_role == receiver_role
+                Message.receiver_role == 'teacher'
             ),
             db.and_(
                 Message.sender_id == teacher_id,
-                Message.sender_role == sender_role,
+                Message.sender_role == 'teacher',
                 Message.receiver_id == student_id,
-                Message.receiver_role == receiver_role
+                Message.receiver_role == 'student'
             )
         )
     ).order_by(Message.timestamp.asc()).all()
