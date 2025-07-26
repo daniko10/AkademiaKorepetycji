@@ -9,6 +9,15 @@
         <h2 class="card-title">Witaj, {{ student.name }} {{ student.surname
           }}!</h2>
         <p class="text-muted">Twój email: {{ student.email }}</p>
+        <p class="text-muted mb-0">Twoi nauczyciele:</p>
+        <ul class="list-group mt-2">
+          {% for teacher in teachers %}
+          <li class="list-group-item">
+            {{ teacher.name }} {{ teacher.surname }} ({{ teacher.email }})
+            <a href="{{ url_for('chat', student_id=student.id, teacher_id=teacher.id, role='student') }}"
+              class="btn btn-light-blue btn-sm float-end">💬 Chat</a>
+          </li>
+          {% endfor %}
       </div>
     </div>
 
