@@ -31,7 +31,9 @@
             <div class="d-flex justify-content-end mb-3">
               <a href="{{ url_for('assign_task', student_id=student.id) }}"
                 class="btn btn-light-blue me-2">➕ Przypisz nowe zadanie</a>
-            </div>
+              <a href="{{ url_for('chat', student_id=student.id, teacher_id=teacher.id, role='teacher') }}"
+                class="btn btn-light-blue me-2">💬 Chat</a>
+              </div>
 
             {% set tasks = student.tasks|selectattr("teacher_id", "equalto",
             teacher.id)|list %}

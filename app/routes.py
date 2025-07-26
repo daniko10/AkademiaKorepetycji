@@ -1,8 +1,8 @@
 from flask import render_template, redirect, url_for, session, flash, send_from_directory, request
 from flask_login import login_user, logout_user, login_required, current_user
 from app import app, db, bcrypt, login_manager
-from app.forms import LoginForm, RegisterForm, AssignTaskForm, TaskSubmissionForm, GradeTaskForm
-from app.models import Student, Teacher, Task, Administrator
+from app.forms import LoginForm, RegisterForm, AssignTaskForm, TaskSubmissionForm, GradeTaskForm, WriteMessageForm
+from app.models import Student, Teacher, Task, Administrator, Message
 from sqlalchemy import and_, not_
 from werkzeug.utils import secure_filename
 from datetime import datetime
@@ -314,6 +314,45 @@ def approve_user(user_type, user_id):
     db.session.commit()
     flash("Użytkownik zatwierdzony!", "success")
     return redirect(url_for('admin_dashboard'))
+
+@app.route('/chat/<int:student_id>/<int:teacher_id>/<string:role>', methods=['GET', 'POST'])
+@login_required
+def chat(student_id, teacher_id, role):
+    print('Chat route accessed')
+    sender_role = 'teacher'
+    receiver_role = 'student'
+    if role == 'student':
+        sender_role = 'student'
+        receiver_role = 'teacher'
+    messages = Message.query.filter(
+        db.or_(
+            db.and_(
+                Message.sender_id == student_id,
+                Message.sender_role == sender_role,
+                Message.receiver_id == teacher_id,
+                Message.receiver_role == receiver_role
+            ),
+            db.and_(
+                Message.sender_id == teacher_id,
+                Message.sender_role == sender_role,
+                Message.receiver_id == student_id,
+                Message.receiver_role == receiver_role
+            )
+        )
+    ).order_by(Message.timestamp.asc()).all()
+    form = WriteMessageForm()
+    if form.validate_on_submit():
+        message = Message(
+            sender_id=student_id if role == 'student' else teacher_id,
+            receiver_id=teacher_id if role == 'student' else student_id,
+            sender_role=sender_role,
+            receiver_role=receiver_role,
+            content=form.message.data
+        )
+        db.session.add(message)
+        db.session.commit()
+        return redirect(url_for('chat', student_id=student_id, teacher_id=teacher_id, role=role))
+    return render_template('chat.html', form=form, messages=messages)
 
 @app.route('/logout')
 @login_required

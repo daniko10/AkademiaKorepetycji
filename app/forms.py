@@ -68,3 +68,7 @@ class AssignStudentForm(FlaskForm):
         validators=[InputRequired()]
     )
     submit = SubmitField('Zapisz')
+
+class WriteMessageForm(FlaskForm):
+    message = TextAreaField('Wiadomość', validators=[InputRequired(), Length(min=1, max=500)])
+    submit = SubmitField('Wyślij')
