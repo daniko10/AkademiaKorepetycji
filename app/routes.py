@@ -183,25 +183,9 @@ def submit_task(task_id):
         task.submitted = True
         db.session.commit()
 
-        return redirect(url_for('dashboard'))
+        return redirect(url_for('send_email', email=task.teacher.email, purpose='submit_task'))
+        
     return render_template('submit_task.html', form=form, task=task)
-
-@app.route('/send-email/<string:email>/<string:purpose>', methods=['GET', 'POST'])
-def send_email(email, purpose):    
-    match purpose:
-        case 'assign_task':
-            subject = "Nowe zadanie do wykonania"
-            body = "Zostało Ci przydzielone nowe zadanie. Proszę sprawdzić swoje zadania na stronie."
-    
-    msg = MailMessage(subject, sender = os.getenv('EMAIL'), recipients = [email])
-    msg.body = body
-    
-    try:
-        mail.send(msg)
-    except Exception as e:
-        flash(f"Wystąpił błąd podczas wysyłania emaila: {str(e)}", "danger")
-    
-    return redirect(url_for('dashboard'))
 
 @app.route('/grade-task/<int:task_id>', methods=['GET', 'POST'])
 @login_required
@@ -222,10 +206,33 @@ def grade_task(task_id):
         else:
             task.earned_points = form.earned_points.data
             db.session.commit()
-            flash("Ocena zapisana!", "success")
-            return redirect(url_for('dashboard'))
+            
+            return redirect(url_for('send_email', email=task.student.email, purpose='grade_task'))
 
     return render_template('grade_task.html', form=form, task=task)
+
+@app.route('/send-email/<string:email>/<string:purpose>', methods=['GET', 'POST'])
+def send_email(email, purpose):    
+    match purpose:
+        case 'assign_task':
+            subject = "Nowe zadanie do wykonania"
+            body = "Zostało Ci przydzielone nowe zadanie. Proszę sprawdzić swoje zadania na stronie."
+        case 'submit_task':
+            subject = "Zadanie zostało oddane"
+            body = "Zadanie zostało oddane. Proszę ocenić zadanie."
+        case 'grade_task':
+            subject = "Zadanie zostało ocenione"
+            body = "Twoje zadanie zostało ocenione. Proszę sprawdzić swoje zadania na stronie."
+    
+    msg = MailMessage(subject, sender = os.getenv('EMAIL'), recipients = [email])
+    msg.body = body
+    
+    try:
+        mail.send(msg)
+    except Exception as e:
+        flash(f"Wystąpił błąd podczas wysyłania emaila: {str(e)}", "danger")
+    
+    return redirect(url_for('dashboard'))
 
 @app.route('/uploads/<filename>')
 @login_required
