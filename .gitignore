@@ -3,3 +3,4 @@ uploads/
 app/__pycache__/
 database.db
 help.txt
+.env

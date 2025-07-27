@@ -1,6 +1,6 @@
 from flask import render_template, redirect, url_for, session, flash, send_from_directory, request
 from flask_login import login_user, logout_user, login_required, current_user
-from app import app, db, bcrypt, login_manager
+from app import app, db, bcrypt, login_manager, mail, MailMessage
 from app.forms import LoginForm, RegisterForm, AssignTaskForm, TaskSubmissionForm, GradeTaskForm, WriteMessageForm
 from app.models import Student, Teacher, Task, Administrator, Message
 from sqlalchemy import and_, not_
@@ -10,7 +10,6 @@ from app.utils import compress_file
 from datetime import date
 import os
 import json
-
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -154,7 +153,8 @@ def assign_task(student_id):
         )
         db.session.add(task)
         db.session.commit()
-        return redirect(url_for('dashboard'))
+        
+        return redirect(url_for('send_email', email=student.email, purpose='assign_task'))
     
     today_iso = date.today().isoformat()
     return render_template('assign_task.html', form=form, student=student, min_date=today_iso)
@@ -185,6 +185,23 @@ def submit_task(task_id):
 
         return redirect(url_for('dashboard'))
     return render_template('submit_task.html', form=form, task=task)
+
+@app.route('/send-email/<string:email>/<string:purpose>', methods=['GET', 'POST'])
+def send_email(email, purpose):    
+    match purpose:
+        case 'assign_task':
+            subject = "Nowe zadanie do wykonania"
+            body = "Zostało Ci przydzielone nowe zadanie. Proszę sprawdzić swoje zadania na stronie."
+    
+    msg = MailMessage(subject, sender = os.getenv('EMAIL'), recipients = [email])
+    msg.body = body
+    
+    try:
+        mail.send(msg)
+    except Exception as e:
+        flash(f"Wystąpił błąd podczas wysyłania emaila: {str(e)}", "danger")
+    
+    return redirect(url_for('dashboard'))
 
 @app.route('/grade-task/<int:task_id>', methods=['GET', 'POST'])
 @login_required
