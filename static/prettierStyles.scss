@@ -1,0 +1,743 @@
+@use "../node_modules/bootstrap/scss/bootstrap";
+
+.admin-dashboard {
+  @extend .container;
+  @extend .py-4;
+
+  &__title {
+    @extend .mb-4;
+  }
+
+  // Karty
+  &__card {
+    @extend .card;
+    @extend .mb-4;
+  }
+
+  &__header {
+    @extend .card-header;
+
+    &--warning {
+      @extend .admin-dashboard__header;
+      @extend .bg-warning;
+      @extend .text-white;
+    }
+
+    &--info {
+      @extend .admin-dashboard__header;
+      @extend .bg-info;
+      @extend .text-white;
+    }
+
+    &--primary {
+      @extend .admin-dashboard__header;
+      @extend .bg-primary;
+      @extend .text-white;
+    }
+
+    &--secondary {
+      @extend .admin-dashboard__header;
+      @extend .bg-secondary;
+      @extend .text-white;
+    }
+  }
+
+  &__body {
+    @extend .card-body;
+  }
+
+  // Lista
+  &__list {
+    @extend .list-group;
+  }
+
+  &__list-item {
+    @extend .list-group-item;
+    @extend .d-flex;
+    @extend .justify-content-between;
+    @extend .align-items-center;
+
+    &--wrap {
+      @extend .admin-dashboard__list-item; 
+      @extend .flex-wrap;
+    }
+  }
+
+  // Formularze
+  &__form {
+    @extend .d-flex;
+    @extend .align-items-center;
+    @extend .gap-2;
+
+    &--space-between {
+      @extend .admin-dashboard__form;
+      @extend .justify-content-between;
+    }
+  }
+
+  // Select
+  &__select {
+    @extend .form-select;
+    @extend .form-select-sm;
+    min-width: 200px;
+  }
+
+  // Przyciski
+  &__btn {
+    @extend .btn;
+    @extend .btn-sm;
+
+    &--approve {
+      @extend .admin-dashboard__btn;
+      @extend .btn-success;
+    }
+
+    &--delete {
+      @extend .admin-dashboard__btn;
+      @extend .btn-danger;
+    }
+
+    &--update {
+      @extend .admin-dashboard__btn;
+      @extend .btn-primary;
+    }
+  }
+}
+
+// ========================= teacher_dashboard.html ========================
+
+.teacher-dashboard {
+  @extend .row;
+  @extend .justify-content-center;
+
+  &__column {
+    @extend .col-lg-8;
+  }
+
+  &__card {
+    @extend .card;
+    @extend .shadow-sm;
+    @extend .mb-4;
+  }
+
+  &__card-body {
+    @extend .card-body;
+  }
+
+  &__title {
+    @extend .card-title;
+  }
+
+  &__subject {
+    @extend .text-muted;
+    @extend .mb-0;
+  }
+
+  &__accordion {
+    @extend .accordion;
+  }
+
+  &__accordion-item {
+    @extend .accordion-item;
+    @extend .mb-2;
+  }
+
+  &__accordion-header {
+    @extend .accordion-header;
+  }
+
+  &__accordion-button {
+    @extend .accordion-button;
+  }
+
+  &__accordion-body {
+    @extend .accordion-body;
+  }
+
+  &__task-actions {
+    @extend .d-flex;
+    @extend .justify-content-end;
+    @extend .mb-3;
+  }
+
+  &__btn-new-task {
+    @extend .btn;
+    @extend .me-2;
+  }
+
+  &__task-list {
+    @extend .list-group;
+  }
+
+  &__task-item {
+    @extend .list-group-item;
+  }
+
+  &__task-header {
+    @extend .d-flex;
+    @extend .w-100;
+    @extend .justify-content-between;
+    @extend .align-items-center;
+  }
+
+  &__task-title {
+    @extend .mb-1;
+  }
+
+  &__task-deadline {
+    @extend .small;
+  }
+
+  &__task-description {
+    @extend .mb-1;
+  }
+
+  &__task-status {
+    @extend .mb-2;
+  }
+
+  &__badge-submitted {
+    @extend .badge;
+    @extend .bg-success;
+  }
+
+  &__badge-graded {
+    @extend .badge;
+    @extend .bg-info;
+  }
+
+  &__badge-pending {
+    @extend .badge;
+    @extend .bg-warning;
+    @extend .text-dark;
+  }
+
+  &__btn-grade {
+    @extend .btn;
+    @extend .btn-sm;
+    @extend .btn-outline-secondary;
+    @extend .ms-2;
+  }
+
+  &__attachments-title {
+    @extend .mt-2;
+  }
+
+  &__attachments-list {
+    @extend .list-group;
+    @extend .mb-2;
+  }
+
+  &__attachments-item {
+    @extend .list-group-item;
+    @extend .py-1;
+  }
+
+  &__alert-empty {
+    @extend .alert;
+    @extend .alert-secondary;
+  }
+
+  &__text-empty {
+    @extend .text-muted;
+    @extend .mb-0;
+  }
+}
+
+// ========================= login.html ========================
+
+.login {
+  @extend .row;
+  @extend .justify-content-center;
+
+  &__col {
+    @extend .col-md-6;
+    @extend .col-lg-5;
+  }
+
+  &__card {
+    @extend .card;
+    @extend .shadow-sm;
+  }
+
+  &__card-body {
+    @extend .card-body;
+  }
+
+  &__title {
+    @extend .card-title;
+    @extend .text-center;
+    @extend .mb-4;
+  }
+
+  &__form-group {
+    @extend .mb-3;
+  }
+
+  &__label {
+    @extend .form-label;
+  }
+
+  &__input {
+    @extend .form-control;
+  }
+
+  &__submit {
+    @extend .d-grid;
+  }
+
+  &__submit-btn {
+    @extend .btn;
+    @extend .btn-primary;
+  }
+
+  &__register-text {
+    @extend .mt-3;
+    @extend .text-center;
+  }
+}
+
+// ========================= home.html ========================
+
+.home {
+  @extend .d-flex;
+  @extend .flex-column;
+  @extend .justify-content-center;
+  @extend .align-items-center;
+  min-height: 60vh;
+
+  &__title {
+    @extend .display-4;
+    @extend .mb-4;
+  }
+
+  &__buttons {
+    @extend .d-grid;
+    @extend .gap-2;
+    @extend .d-sm-flex;
+    @extend .justify-content-sm-center;
+  }
+
+  &__login-btn {
+    @extend .btn;
+    @extend .btn-primary;
+    @extend .btn-lg;
+  }
+
+  &__register-btn {
+    @extend .btn;
+    @extend .btn-outline-secondary;
+    @extend .btn-lg;
+  }
+}
+
+//==== register
+
+.register {
+  @extend .row;
+  @extend .justify-content-center;
+
+  &__card {
+    @extend .col-md-7;
+    @extend .col-lg-6;
+    @extend .card;
+    @extend .shadow-sm;
+  }
+
+  &__card-body {
+    @extend .card-body;
+  }
+
+  &__title {
+    @extend .card-title;
+    @extend .text-center;
+    @extend .mb-4;
+  }
+
+  &__field {
+    @extend .mb-3;
+
+    label {
+      @extend .form-label;
+    }
+  }
+
+  &__role-option {
+    @extend .form-check;
+    @extend .form-check-inline;
+  }
+
+  &__role-input {
+    @extend .form-check-input;
+  }
+
+  &__input {
+    @extend .form-control;
+  }
+
+  &__select {
+    @extend .form-select;
+  }
+
+  &__submit {
+    @extend .d-grid;
+  }
+
+  &__btn {
+    @extend .btn;
+    @extend .btn-primary;
+    @extend .w-100;
+  }
+
+  &__login-link {
+    @extend .mt-3;
+    @extend .text-center;
+  }
+}
+
+// ========================= student_dashboard.html ========================
+
+.student-dashboard {
+  @extend .row;
+  @extend .justify-content-center;
+
+  &__wrapper {
+    @extend .col-lg-8;
+  }
+
+  &__card {
+    @extend .card;
+    @extend .shadow-sm;
+
+    &--welcome {
+      @extend .mb-4;
+    }
+
+    &-body {
+      @extend .card-body;
+    }
+  }
+
+  &__title {
+    @extend .card-title;
+  }
+
+  &__email {
+    @extend .text-muted;
+  }
+
+  &__tasks-title {
+    @extend .card-title;
+    @extend .mb-3;
+  }
+
+  &__task-list {
+    @extend .list-group;
+    @extend .list-group-flush;
+  }
+
+  &__task-item {
+    @extend .list-group-item;
+  }
+
+  &__task-header,
+  &__task-desc-row {
+    @extend .d-flex;
+    @extend .w-100;
+    @extend .justify-content-between;
+  }
+
+  &__task-name {
+    @extend .mb-1;
+  }
+
+  &__task-desc {
+    @extend .mb-1;
+  }
+
+  &__task-teacher {
+    @extend .text-muted;
+  }
+
+  &__attachments-label {
+    @extend .mt-2;
+  }
+
+  &__attachments-list {
+    @extend .list-group;
+    @extend .mb-2;
+  }
+
+  &__attachment-item {
+    @extend .list-group-item;
+    @extend .py-1;
+  }
+
+  &__task-footer {
+    @extend .mt-3;
+
+    & > .student-dashboard__badge {
+      @extend .badge;
+    }
+
+    & > .student-dashboard__btn-send {
+      @extend .btn;
+      @extend .btn-sm;
+      @extend .btn-warning;
+    }
+
+    & > .student-dashboard__max-points {
+      @extend .text-muted;
+      @extend .ms-2;
+    }
+  }
+
+  &__badge {
+    &--sent {
+      @extend .bg-success;
+    }
+
+    &--grade {
+      @extend .bg-info;
+      @extend .ms-2;
+    }
+  }
+
+  &__btn-send {
+    @extend .btn;
+    @extend .btn-sm;
+    @extend .btn-warning;
+  }
+
+  &__max-points {
+    @extend .text-muted;
+    @extend .ms-2;
+  }
+
+  &__alert {
+    @extend .alert;
+    @extend .alert-secondary;
+    @extend .mb-0;
+  }
+}
+
+//========================= assign_task.html ========================
+
+.assign-task {
+  @extend .row;
+  @extend .justify-content-center;
+
+  &__wrapper {
+    @extend .col-12;
+    @extend .col-md-10;
+    @extend .col-lg-8;
+    @extend .col-xl-6;
+  }
+
+  &__card {
+    @extend .card;
+    @extend .shadow-sm;
+  }
+
+  &__card-body {
+    @extend .card-body;
+  }
+
+  &__title {
+    @extend .card-title;
+    @extend .mb-4;
+  }
+
+  &__form-group {
+    @extend .mb-3;
+  }
+
+  &__label {
+    @extend .form-label;
+  }
+
+  &__input {
+    @extend .form-control;
+  }
+
+  &__textarea {
+    @extend .form-control;
+  }
+
+  &__form-row {
+    @extend .row;
+  }
+
+  &__form-col {
+    @extend .col-md-6;
+    @extend .mb-3;
+  }
+
+  &__form-help {
+    @extend .form-text;
+  }
+
+  &__submit-wrapper {
+    @extend .d-grid;
+  }
+
+  &__btn-submit {
+    @extend .btn;
+    @extend .btn-primary;
+  }
+
+  &__back-link {
+    @extend .mt-3;
+    @extend .text-end;
+  }
+
+  &__btn-back {
+    @extend .btn;
+    @extend .btn-link;
+  }
+}
+
+//========================= submit_task.html ========================
+
+.submit-task {
+  &__container {
+    @extend .row;
+    @extend .justify-content-center;
+  }
+
+  &__column {
+    @extend .col-md-8;
+    @extend .col-lg-6;
+  }
+
+  &__card {
+    @extend .card;
+    @extend .shadow-sm;
+  }
+
+  &__card-body {
+    @extend .card-body;
+  }
+
+  &__title {
+    @extend .card-title;
+    @extend .mb-3;
+  }
+
+  &__subtitle {
+    @extend .mb-4;
+  }
+
+  &__form-group {
+    @extend .mb-3;
+  }
+
+  &__label {
+    @extend .form-label;
+  }
+
+  &__input {
+    @extend .form-control;
+  }
+
+  &__input-textarea {
+    @extend .form-control;
+  }
+
+  &__form-text {
+    @extend .form-text;
+  }
+
+  &__button-wrapper {
+    @extend .d-grid;
+  }
+
+  &__button {
+    @extend .btn;
+    @extend .btn-primary;
+  }
+
+  &__back {
+    @extend .mt-3;
+    @extend .text-end;
+  }
+
+  &__back-link {
+    @extend .btn;
+    @extend .btn-link;
+  }
+}
+
+
+//========================= grade_task.html ========================
+
+.grade-task {
+  @extend .row;
+  @extend .justify-content-center;
+
+  &__wrapper {
+    @extend .col-md-8;
+    @extend .col-lg-6;
+  }
+
+  &__card {
+    @extend .card;
+    @extend .shadow-sm;
+  }
+
+  &__card-body {
+    @extend .card-body;
+  }
+
+  &__title {
+    @extend .card-title;
+    @extend .mb-3;
+  }
+
+  &__subtitle {
+    @extend .mb-4;
+  }
+
+  &__answer {
+    @extend .mb-4;
+  }
+
+  &__answer-text {
+    @extend .mt-2;
+  }
+
+  &__form-group {
+    @extend .mb-3;
+  }
+
+  &__label {
+    @extend .form-label;
+  }
+
+  &__input {
+    @extend .form-control;
+  }
+
+  &__form-help {
+    @extend .form-text;
+  }
+
+  &__submit-wrapper {
+    @extend .d-grid;
+  }
+
+  &__btn-submit {
+    @extend .btn;
+    @extend .btn-success;
+  }
+
+  &__back-link {
+    @extend .mt-3;
+    @extend .text-end;
+  }
+
+  &__btn-back {
+    @extend .btn;
+    @extend .btn-link;
+  }
+}
