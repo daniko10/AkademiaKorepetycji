@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}Chat – AK{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-8">
+    <div class="container mt-4">
+        <div class="chat-box border rounded p-3 mb-4" style="height: 400px; overflow-y: auto; background-color: #f8f9fa;">
+            {% if messages %}
+                {% for message in messages %}
+                    {% if message.sender_role == 'teacher' %}
+                        <div class="alert alert-primary py-2 px-3 mb-2" role="alert">
+                            <strong>Nauczyciel:</strong> {{ message.content }}
+                        </div>
+                    {% else %}
+                        <div class="alert alert-secondary py-2 px-3 mb-2" role="alert">
+                            <strong>Uczeń:</strong> {{ message.content }}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                <p class="text-muted">Brak wiadomości.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <form method="POST">
+        {{ form.hidden_tag() }}
+
+        <div class="mb-3">
+            {{ form.message.label(class="form-label") }}
+            {{ form.message(class="form-control") }}
+        </div>
+
+        <div class="d-grid">
+            {{ form.submit(class="btn btn-success") }}
+        </div>
+    </form>
+
+    <div class="mt-3 text-end">
+        <a href="{{ url_for('dashboard') }}" class="btn btn-link">&larr; Wróć
+        do dashboardu</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

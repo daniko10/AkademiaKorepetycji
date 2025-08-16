@@ -1,8 +1,8 @@
 from flask import render_template, redirect, url_for, session, flash, send_from_directory, request
 from flask_login import login_user, logout_user, login_required, current_user
-from app import app, db, bcrypt, login_manager
-from app.forms import LoginForm, RegisterForm, AssignTaskForm, TaskSubmissionForm, GradeTaskForm
-from app.models import Student, Teacher, Task, Administrator
+from app import app, db, bcrypt, login_manager, mail, MailMessage
+from app.forms import LoginForm, RegisterForm, AssignTaskForm, TaskSubmissionForm, GradeTaskForm, WriteMessageForm
+from app.models import Student, Teacher, Task, Administrator, Message
 from sqlalchemy import and_, not_
 from werkzeug.utils import secure_filename
 from datetime import datetime
@@ -10,7 +10,6 @@ from app.utils import compress_file
 from datetime import date
 import os
 import json
-
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -87,6 +86,7 @@ def register():
 
         db.session.add(user)
         db.session.commit()
+        flash("Rejestracja zakończona pomyślnie! Proszę czekać na potwierdzenie.", "success")
         return redirect(url_for('login'))
 
     return render_template('register.html', form=form)
@@ -109,12 +109,14 @@ def dashboard():
 
     elif isinstance(current_user, Student):
         tasks = Task.query.filter_by(student_id=current_user.id).all()
+        teachers = current_user.teachers
         for t in tasks:
             t.attachment_list = json.loads(t.teacher_attachments  or '[]')
             t.submission_list = json.loads(t.student_attachments or '[]')
         return render_template('student_dashboard.html',
                                student=current_user,
-                               tasks=tasks)
+                               tasks=tasks,
+                               teachers=teachers)
 
     elif isinstance(current_user, Administrator):
         return redirect(url_for('admin_dashboard'))
@@ -151,7 +153,8 @@ def assign_task(student_id):
         )
         db.session.add(task)
         db.session.commit()
-        return redirect(url_for('dashboard'))
+        
+        return redirect(url_for('send_email', email=student.email, purpose='assign_task'))
     
     today_iso = date.today().isoformat()
     return render_template('assign_task.html', form=form, student=student, min_date=today_iso)
@@ -180,7 +183,8 @@ def submit_task(task_id):
         task.submitted = True
         db.session.commit()
 
-        return redirect(url_for('dashboard'))
+        return redirect(url_for('send_email', email=task.teacher.email, purpose='submit_task'))
+        
     return render_template('submit_task.html', form=form, task=task)
 
 @app.route('/grade-task/<int:task_id>', methods=['GET', 'POST'])
@@ -202,10 +206,33 @@ def grade_task(task_id):
         else:
             task.earned_points = form.earned_points.data
             db.session.commit()
-            flash("Ocena zapisana!", "success")
-            return redirect(url_for('dashboard'))
+            
+            return redirect(url_for('send_email', email=task.student.email, purpose='grade_task'))
 
     return render_template('grade_task.html', form=form, task=task)
+
+@app.route('/send-email/<string:email>/<string:purpose>', methods=['GET', 'POST'])
+def send_email(email, purpose):    
+    match purpose:
+        case 'assign_task':
+            subject = "Nowe zadanie do wykonania"
+            body = "Zostało Ci przydzielone nowe zadanie. Proszę sprawdzić swoje zadania na stronie."
+        case 'submit_task':
+            subject = "Zadanie zostało oddane"
+            body = "Zadanie zostało oddane. Proszę ocenić zadanie."
+        case 'grade_task':
+            subject = "Zadanie zostało ocenione"
+            body = "Twoje zadanie zostało ocenione. Proszę sprawdzić swoje zadania na stronie."
+    
+    msg = MailMessage(subject, sender = os.getenv('EMAIL'), recipients = [email])
+    msg.body = body
+    
+    try:
+        mail.send(msg)
+    except Exception as e:
+        flash(f"Wystąpił błąd podczas wysyłania emaila: {str(e)}", "danger")
+    
+    return redirect(url_for('dashboard'))
 
 @app.route('/uploads/<filename>')
 @login_required
@@ -314,6 +341,45 @@ def approve_user(user_type, user_id):
     db.session.commit()
     flash("Użytkownik zatwierdzony!", "success")
     return redirect(url_for('admin_dashboard'))
+
+@app.route('/chat/<int:student_id>/<int:teacher_id>/<string:role>', methods=['GET', 'POST'])
+@login_required
+def chat(student_id, teacher_id, role):
+    print('Chat route accessed')
+    sender_role = 'teacher'
+    receiver_role = 'student'
+    if role == 'student':
+        sender_role = 'student'
+        receiver_role = 'teacher'
+    messages = Message.query.filter(
+        db.or_(
+            db.and_(
+                Message.sender_id == student_id,
+                Message.sender_role == 'student',
+                Message.receiver_id == teacher_id,
+                Message.receiver_role == 'teacher'
+            ),
+            db.and_(
+                Message.sender_id == teacher_id,
+                Message.sender_role == 'teacher',
+                Message.receiver_id == student_id,
+                Message.receiver_role == 'student'
+            )
+        )
+    ).order_by(Message.timestamp.asc()).all()
+    form = WriteMessageForm()
+    if form.validate_on_submit():
+        message = Message(
+            sender_id=student_id if role == 'student' else teacher_id,
+            receiver_id=teacher_id if role == 'student' else student_id,
+            sender_role=sender_role,
+            receiver_role=receiver_role,
+            content=form.message.data
+        )
+        db.session.add(message)
+        db.session.commit()
+        return redirect(url_for('chat', student_id=student_id, teacher_id=teacher_id, role=role))
+    return render_template('chat.html', form=form, messages=messages)
 
 @app.route('/logout')
 @login_required
