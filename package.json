@@ -1,0 +1,29 @@
+{
+  "name": "akademiakorepetycji",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "copy-bootstrap": "mkdir -p static/bootstrap/css static/bootstrap/js && cp node_modules/bootstrap/dist/css/bootstrap.min.css static/bootstrap/css/ && cp node_modules/bootstrap/dist/js/bootstrap.bundle.min.js static/bootstrap/js/",
+    "run": "npm run copy-bootstrap",
+    "sass": "sass --watch static/prettierStyles.scss:static/prettierStyles.css"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/daniko10/AkademiaKorepetycji.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/daniko10/AkademiaKorepetycji/issues"
+  },
+  "homepage": "https://github.com/daniko10/AkademiaKorepetycji#readme",
+  "dependencies": {
+    "bootstrap": "^5.3.7"
+  },
+  "devDependencies": {
+    "sass": "^1.90.0"
+  }
+}

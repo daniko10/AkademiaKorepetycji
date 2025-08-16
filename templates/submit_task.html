@@ -2,38 +2,39 @@
 {% block title %}Wyślij odpowiedź – {{ task.title }}{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-  <div class="col-md-8 col-lg-6">
-    <div class="card shadow-sm">
-      <div class="card-body">
-        <h2 class="card-title mb-3">Odpowiedź na zadanie</h2>
-        <h4 class="mb-4">{{ task.title }}</h4>
+<div class="submit-task__container">
+  <div class="submit-task__column">
+    <div class="submit-task__card">
+      <div class="submit-task__card-body">
+        <h2 class="submit-task__title">Odpowiedź na zadanie</h2>
+        <h4 class="submit-task__subtitle">{{ task.title }}</h4>
         <p><strong>Opis:</strong> {{ task.description }}</p>
         <p><strong>Termin:</strong> {{ task.due_date.strftime('%Y-%m-%d') }}</p>
 
         <form method="POST" enctype="multipart/form-data">
           {{ form.hidden_tag() }}
 
-          <div class="mb-3">
-            {{ form.answer.label(class="form-label") }}
-            {{ form.answer(class="form-control", rows=4,
+          <div class="submit-task__form-group">
+            {{ form.answer.label(class="submit-task__label") }}
+            {{ form.answer(class="submit-task__input-textarea", rows=4,
             placeholder="Twoja odpowiedź tekstowa") }}
           </div>
 
-          <div class="mb-3">
-            {{ form.attachments.label(class="form-label") }}
-            {{ form.attachments(class="form-control") }}
-            <div class="form-text">Dozwolone: pliki PDF, PNG, JPG</div>
+          <div class="submit-task__form-group">
+            {{ form.attachments.label(class="submit-task__label") }}
+            {{ form.attachments(class="submit-task__input") }}
+            <div class="submit-task__form-text">Dozwolone: pliki PDF, PNG, JPG</div>
           </div>
 
-          <div class="d-grid">
-            {{ form.submit(class="btn btn-primary") }}
+          <div class="submit-task__button-wrapper">
+            {{ form.submit(class="submit-task__button") }}
           </div>
         </form>
 
-        <div class="mt-3 text-end">
-          <a href="{{ url_for('dashboard') }}" class="btn btn-link">&larr; Wróć
-            do dashboardu</a>
+        <div class="submit-task__back">
+          <a href="{{ url_for('dashboard') }}" class="submit-task__back-link">
+            &larr; Wróć do dashboardu
+          </a>
         </div>
       </div>
     </div>
