@@ -6,41 +6,36 @@
     <title>{% block title %}Akademia Korepetycji{% endblock %}</title>
 
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
-
-    <link rel="stylesheet"
-      href="{{ url_for('static', filename='styles.css') }}" />
       
-    <link rel="stylesheet" href="{{ url_for('static', filename='prettierStyles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/prettierStyles.css') }}">
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css"/>
   </head>
-  <body class="bg-light">
+  <body class="base__body">
 
-    <nav class="header-container">
-      <div class="header-tiles">
-        <a class="navbar-brand mb-0 h1" href="{{ url_for('home') }}">
+    <nav class="base__navbar">
+      <div class="base__navbar-container">
+        <a class="base__navbar-brand" href="{{ url_for('home') }}">
           Akademia Korepetycji
         </a>
         {% if current_user.is_authenticated %}
-          <a class="btn btn-outline-light" href="{{ url_for('logout') }}">
+          <a class="base__logout-btn" href="{{ url_for('logout') }}">
             Wyloguj
           </a>
         {% endif %}
       </div>
     </nav>
 
-
-    <div class="container">
+    <div class="base__container">
       {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-      {% for category, msg in messages %}
-      <div class="alert alert-{{ category }} alert-dismissible fade show">
-        {{ msg }}
-        <button type="button" class="btn-close"
-          data-bs-dismiss="alert"></button>
-      </div>
-      {% endfor %}
-      {% endif %}
+        {% if messages %}
+          {% for category, msg in messages %}
+            <div class="base__alert base__alert--{{ category }} alert-dismissible fade show">
+              {{ msg }}
+              <button type="button" class="base__alert-close" data-bs-dismiss="alert"></button>
+            </div>
+          {% endfor %}
+        {% endif %}
       {% endwith %}
 
       {% block content %}{% endblock %}

@@ -1,4 +1,4 @@
-@use "../node_modules/bootstrap/scss/bootstrap";
+@import "../../node_modules/bootstrap/scss/bootstrap";
 
 .admin-dashboard {
   @extend .container;
@@ -100,6 +100,64 @@
     &--update {
       @extend .admin-dashboard__btn;
       @extend .btn-primary;
+    }
+  }
+}
+
+// ========================= base.html ==========================
+
+.base {
+  &__body {
+    @extend .bg-light;
+  }
+
+  &__navbar {
+    @extend .navbar;
+    @extend .navbar-dark;
+    @extend .bg-primary;
+    @extend .mb-4;
+
+    &-container {
+      @extend .container;
+      @extend .d-flex;
+      @extend .justify-content-between;
+      @extend .align-items-center;
+    }
+
+    &-brand {
+      @extend .navbar-brand;
+      @extend .mb-0;
+      @extend .h1;
+    }
+  }
+
+  &__logout-btn {
+    @extend .btn;
+    @extend .btn-outline-light;
+  }
+
+  &__container {
+    @extend .container;
+  }
+
+  &__alert {
+    @extend .alert;
+
+    &-close {
+      @extend .btn-close;
+    }
+
+    &--success {
+      @extend .alert-success;
+    }
+    &--danger {
+      @extend .alert-danger;
+    }
+    &--warning {
+      @extend .alert-warning;
+    }
+    &--info {
+      @extend .alert-info;
     }
   }
 }
@@ -737,6 +795,85 @@
   }
 
   &__btn-back {
+    @extend .btn;
+    @extend .btn-link;
+  }
+}
+
+//========================= chat.html ========================
+
+.chat {
+  @extend .row;
+  @extend .justify-content-center;
+
+  &__container {
+    @extend .col-lg-8;
+    @extend .container;
+    @extend .mt-4;
+  }
+
+  &__box {
+    @extend .border;
+    @extend .rounded;
+    @extend .p-3;
+    @extend .mb-4;
+
+    height: 400px;
+    overflow-y: auto;
+    background-color: #f8f9fa;
+  }
+
+  &__message {
+    @extend .py-2;
+    @extend .px-3;
+    @extend .mb-2;
+
+    &--teacher {
+      @extend .alert;
+      @extend .alert-primary;
+    }
+
+    &--student {
+      @extend .alert;
+      @extend .alert-secondary;
+    }
+  }
+
+  &__empty {
+    @extend .text-muted;
+  }
+
+  &__form {
+    // zwykły formularz – nie musimy extendować nic
+  }
+
+  &__field {
+    @extend .mb-3;
+  }
+
+  &__label {
+    @extend .form-label;
+  }
+
+  &__input {
+    @extend .form-control;
+  }
+
+  &__submit {
+    @extend .d-grid;
+  }
+
+  &__btn {
+    @extend .btn;
+    @extend .btn-success;
+  }
+
+  &__back {
+    @extend .mt-3;
+    @extend .text-end;
+  }
+
+  &__back-link {
     @extend .btn;
     @extend .btn-link;
   }
