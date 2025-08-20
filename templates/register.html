@@ -7,7 +7,7 @@
     <div class="register__card-body">
       <h2 class="register__title">Zarejestruj się</h2>
 
-      <form method="POST">
+      <form method="POST" id="registerForm">
         {{ form.hidden_tag() }}
 
         <div class="register__field">
@@ -32,8 +32,13 @@
 
         <div class="register__field">
           {{ form.email.label }}
-          {{ form.email(class="register__input", placeholder="E-mail") }}
+          {{ form.email(class="register__input", placeholder="E-mail", id="emailInput") }}
+
+          <div id="emailFeedback" style="display:none; color: red;">
+            Ten adres e-mail jest już zajęty.
+          </div>
         </div>
+        
 
         <div class="register__field">
           {{ form.password.label }}
@@ -72,5 +77,40 @@
     );
     toggleSubject();
   });
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const emailInput = document.getElementById("emailInput");
+    const feedback = document.getElementById("emailFeedback");
+    const form = document.getElementById("registerForm");
+    let emailTaken = false;
+
+    emailInput.addEventListener("input", async () => {
+      const email = emailInput.value.trim();
+
+      if (email.length < 3) {
+        feedback.style.display = "none";
+        emailTaken = false;
+        return;
+      }
+
+      const res = await fetch(`/check_email?email=${encodeURIComponent(email)}`);
+      const data = await res.json();
+
+      if (data.exists) {
+        feedback.style.display = "block";
+        emailTaken = true;
+      } else {
+        feedback.style.display = "none";
+        emailTaken = false;
+      }
+    });
+
+    form.addEventListener("submit", (e) => {
+      if (emailTaken) {
+        e.preventDefault();
+      }
+    });
+  });
+
 </script>
 {% endblock %}

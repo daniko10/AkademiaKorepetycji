@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for, session, flash, send_from_directory, request
+from flask import render_template, redirect, url_for, session, flash, send_from_directory, request, jsonify
 from flask_login import login_user, logout_user, login_required, current_user
 from app import app, db, bcrypt, login_manager, mail, MailMessage
 from app.forms import LoginForm, RegisterForm, AssignTaskForm, TaskSubmissionForm, GradeTaskForm, WriteMessageForm
@@ -26,6 +26,20 @@ def load_user(user_id):
 @app.route('/')
 def home():
     return render_template('home.html')
+
+@app.route("/check_email", methods=["GET"])
+def check_email():
+    email = request.args.get("email")
+    
+    exists = False
+    if Student.query.filter_by(email=email).first():
+        exists = True
+    elif Teacher.query.filter_by(email=email).first():
+        exists = True
+    elif Administrator.query.filter_by(email=email).first():
+        exists = True
+
+    return jsonify({"exists": exists})
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -55,17 +69,6 @@ def login():
 def register():
     form = RegisterForm()
     if form.validate_on_submit():
-        existing_user = Student.query.filter_by(email=form.email.data).first()
-        if not existing_user:
-            existing_user = Teacher.query.filter_by(email=form.email.data).first()
-        
-        if not existing_user:
-            existing_user = Administrator.query.filter_by(email=form.email.data).first()
-
-        if existing_user:
-            flash("Użytkownik z tym adresem e-mail już istnieje.", "danger")
-            return render_template('register.html', form=form)
-        
         hashed_pw = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
 
         if form.role.data == 'student':
