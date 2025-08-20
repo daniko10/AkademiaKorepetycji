@@ -24,6 +24,7 @@ def client():
                 surname='Nowak',
                 email='teacher@example.com',
                 password=bcrypt.generate_password_hash('nauczyciel123'),
+                subject='Matematyka',
                 approved=True
             )
             db.session.add(teacher)
@@ -35,6 +36,9 @@ def client():
             )
             db.session.add(admin)
 
+            teacher.students.append(student)
             db.session.commit()
+            db.session.refresh(teacher)
+
             yield client
             db.drop_all()

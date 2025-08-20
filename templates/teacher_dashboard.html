@@ -32,7 +32,7 @@
             <div class="teacher-dashboard__task-actions">
               <a href="{{ url_for('assign_task', student_id=student.id) }}"
                  class="teacher-dashboard__btn-new-task">➕ Przypisz nowe zadanie</a>
-                 <a href="{{ url_for('chat', student_id=student.id, teacher_id=teacher.id, role='teacher') }}"
+              <a href="{{ url_for('chat', student_id=student.id, teacher_id=teacher.id, role='teacher') }}"
                 class="btn btn-light-blue me-2">💬 Chat</a>
             </div>
 
