@@ -194,7 +194,7 @@ def submit_task(task_id):
 @app.route('/grade-task/<int:task_id>', methods=['GET', 'POST'])
 @login_required
 def grade_task(task_id):
-    task = Task.query.get_or_404(task_id)
+    task = get_or_404(Task,task_id)
 
     if not isinstance(current_user, Teacher) or task.teacher_id != current_user.id:
         return "Brak dostępu", 403
