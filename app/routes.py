@@ -8,6 +8,7 @@ from werkzeug.utils import secure_filename
 from datetime import datetime
 from app.utils import compress_file
 from datetime import date
+from app.utils import get_or_404
 import os
 import json
 
@@ -266,14 +267,14 @@ def admin_dashboard():
 
         if action == 'approve_student':
             sid = int(request.form['student_id'])
-            student = Student.query.get_or_404(sid)
+            student = get_or_404(Student, sid)
             student.approved = True
             db.session.commit()
             flash(f"Studenta {student.name} zatwierdzono.", "success")
 
         elif action == 'approve_teacher':
             tid = int(request.form['teacher_id'])
-            teacher = Teacher.query.get_or_404(tid)
+            teacher = get_or_404(Teacher, tid)
             teacher.approved = True
             db.session.commit()
             flash(f"Nauczyciela {teacher.name} zatwierdzono.", "success")
@@ -281,21 +282,21 @@ def admin_dashboard():
         elif action == 'assign_student':
             sid = int(request.form['student_id'])
             tid_list = request.form.getlist('teacher_ids', type=int)
-            s = Student.query.get_or_404(sid)
+            s = get_or_404(Student, sid)
             s.teachers = Teacher.query.filter(Teacher.id.in_(tid_list)).all()
             db.session.commit()
             flash(f"Studenta {s.name} przypisano do wybranych nauczycieli.", "success")
 
         elif action == 'delete_student':
             sid = int(request.form['student_id'])
-            student = Student.query.get_or_404(sid)
+            student = get_or_404(Student, sid)
             db.session.delete(student)
             db.session.commit()
             flash(f"Studenta {student.name} usunięto z systemu.", "warning")
 
         elif action == 'delete_teacher':
             tid = int(request.form['teacher_id'])
-            teacher = Teacher.query.get_or_404(tid)
+            teacher = get_or_404(Teacher, tid)
             for s in teacher.students:
                 s.teacher_id = None
             db.session.delete(teacher)
@@ -305,8 +306,8 @@ def admin_dashboard():
         elif action == 'unassign_student':
             sid = int(request.form['student_id'])
             tid = int(request.form['teacher_id'])
-            student = Student.query.get_or_404(sid)
-            teacher = Teacher.query.get_or_404(tid)
+            student = get_or_404(Student, sid)
+            teacher = get_or_404(Teacher, tid)
 
             if teacher in student.teachers:
                 student.teachers.remove(teacher)
@@ -318,7 +319,7 @@ def admin_dashboard():
         elif action == 'update_teachers':
             sid = int(request.form['student_id'])
             tid_list = request.form.getlist('teacher_ids', type=int)
-            student = Student.query.get_or_404(sid)
+            student = get_or_404(Student, sid)
             student.teachers = Teacher.query.filter(Teacher.id.in_(tid_list)).all()
             db.session.commit()
             flash(f"Przypisania nauczycieli zaktualizowano dla {student.name}.", "success")

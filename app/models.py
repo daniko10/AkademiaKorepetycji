@@ -1,7 +1,7 @@
 from app import db
 from flask_login import UserMixin
 from sqlalchemy import Text
-from datetime import datetime
+from datetime import datetime, timezone
 
 class UserBase(db.Model):
     __abstract__ = True
@@ -65,5 +65,5 @@ class Message(db.Model):
     sender_role = db.Column(db.String(20), nullable=False)
     receiver_role = db.Column(db.String(20), nullable=False)
     content = db.Column(db.Text, nullable=False)
-    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+    timestamp = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     
