@@ -7,7 +7,7 @@ from sqlalchemy import and_, not_
 from werkzeug.utils import secure_filename
 from datetime import datetime
 from app.utils import compress_file
-from datetime import date
+from datetime import date, timezone
 from app.utils import get_or_404
 import os
 import json
@@ -133,7 +133,7 @@ def assign_task(student_id):
     if not isinstance(current_user, Teacher):
         return "Brak dostępu", 403
 
-    student = Student.query.get_or_404(student_id)
+    student = get_or_404(Student,student_id)
     form = AssignTaskForm()
 
     if form.validate_on_submit():
@@ -152,7 +152,7 @@ def assign_task(student_id):
             max_points=form.max_points.data,
             student_id=student.id,
             teacher_id=current_user.id,
-            issued_at=datetime.utcnow(),
+            issued_at=datetime.now(timezone.utc),
             teacher_attachments=json.dumps(filenames)
         )
         db.session.add(task)
@@ -166,7 +166,7 @@ def assign_task(student_id):
 @app.route('/submit-task/<int:task_id>', methods=['GET', 'POST'])
 @login_required
 def submit_task(task_id):
-    task = Task.query.get_or_404(task_id)
+    task = get_or_404(Task,task_id)
     if not isinstance(current_user, Student) or task.student_id != current_user.id:
         return "Brak dostępu", 403
     form = TaskSubmissionForm()
