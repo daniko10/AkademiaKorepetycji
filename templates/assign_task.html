@@ -1,54 +1,50 @@
 {% extends 'base.html' %}
-{% block title %}Nowe zadanie – {{ student.name }} {{ student.surname }}{%
-endblock %}
+{% block title %}Nowe zadanie – {{ student.name }} {{ student.surname }}{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-  <div class="col-12 col-md-10 col-lg-8 col-xl-6">
-    <div class="card shadow-sm">
-      <div class="card-body">
-        <h2 class="card-title mb-4">Nowe zadanie dla {{ student.name }} {{
-          student.surname }}</h2>
+<div class="assign-task">
+  <div class="assign-task__wrapper">
+    <div class="assign-task__card">
+      <div class="assign-task__card-body">
+        <h2 class="assign-task__title">Nowe zadanie dla {{ student.name }} {{ student.surname }}</h2>
 
-        <form method="POST" enctype="multipart/form-data">
+        <form class="assign-task__form" method="POST" enctype="multipart/form-data">
           {{ form.hidden_tag() }}
 
-          <div class="mb-3">
-            {{ form.title.label(class="form-label") }}
-            {{ form.title(class="form-control", placeholder="Tytuł zadania") }}
+          <div class="assign-task__form-group">
+            {{ form.title.label(class="assign-task__label") }}
+            {{ form.title(class="assign-task__input", placeholder="Tytuł zadania") }}
           </div>
 
-          <div class="mb-3">
-            {{ form.description.label(class="form-label") }}
-            {{ form.description(class="form-control", rows=4,
-            placeholder="Opis zadania (opcjonalnie)") }}
+          <div class="assign-task__form-group">
+            {{ form.description.label(class="assign-task__label") }}
+            {{ form.description(class="assign-task__textarea", rows=4, placeholder="Opis zadania (opcjonalnie)") }}
           </div>
 
-          <div class="row">
-            <div class="col-md-6 mb-3">
-              {{ form.due_date.label(class="form-label") }}
-              {{ form.due_date(class="form-control", min=min_date) }}
+          <div class="assign-task__form-row">
+            <div class="assign-task__form-col">
+              {{ form.due_date.label(class="assign-task__label") }}
+              {{ form.due_date(class="assign-task__input", min=min_date) }}
             </div>
-            <div class="col-md-6 mb-3">
-              {{ form.max_points.label(class="form-label") }}
-              {{ form.max_points(class="form-control") }}
+            <div class="assign-task__form-col">
+              {{ form.max_points.label(class="assign-task__label") }}
+              {{ form.max_points(class="assign-task__input") }}
             </div>
           </div>
 
-          <div class="mb-3">
-            {{ form.attachments.label(class="form-label") }}
-            {{ form.attachments(class="form-control") }}
-            <div class="form-text">Dozwolone: pliki PDF, PNG, JPG</div>
+          <div class="assign-task__form-group">
+            {{ form.attachments.label(class="assign-task__label") }}
+            {{ form.attachments(class="assign-task__input") }}
+            <div class="assign-task__form-help">Dozwolone: pliki PDF, PNG, JPG</div>
           </div>
 
-          <div class="d-grid">
-            {{ form.submit(class="btn btn-primary") }}
+          <div class="assign-task__submit-wrapper">
+            {{ form.submit(class="assign-task__btn-submit") }}
           </div>
         </form>
 
-        <div class="mt-3 text-end">
-          <a href="{{ url_for('dashboard') }}" class="btn btn-link">&larr; Wróć
-            do dashboardu</a>
+        <div class="assign-task__back-link">
+          <a href="{{ url_for('dashboard') }}" class="assign-task__btn-back">&larr; Wróć do dashboardu</a>
         </div>
       </div>
     </div>

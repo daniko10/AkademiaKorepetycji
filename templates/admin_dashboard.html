@@ -2,30 +2,27 @@
 {% block title %}Panel Administratora{% endblock %}
 
 {% block content %}
-<div class="container py-4">
-  <h1 class="mb-4">Panel Administratora</h1>
+<div class="admin-dashboard">
+  <h1 class="admin-dashboard__title">Panel Administratora</h1>
 
-  <div class="card mb-4">
-    <div class="card-header bg-warning text-white">
+  <!-- Studenci oczekujący -->
+  <div class="admin-dashboard__card">
+    <div class="admin-dashboard__header--warning">
       <strong>Studenci oczekujący na zatwierdzenie</strong>
     </div>
-    <div class="card-body">
+    <div class="admin-dashboard__body">
       {% if pending_students %}
-      <ul class="list-group">
+      <ul class="admin-dashboard__list">
         {% for s in pending_students %}
-        <li
-          class="list-group-item d-flex justify-content-between align-items-center">
+        <li class="admin-dashboard__list-item">
           <div>
-            {{ s.name }} {{ s.surname }}<br>
+            <strong>{{ s.name }} {{ s.surname }}</strong><br>
             <small class="text-muted">{{ s.email }}</small>
           </div>
-          <form method="POST" action="{{ url_for('admin_dashboard') }}"
-            class="mb-0">
+          <form method="POST" action="{{ url_for('admin_dashboard') }}" class="admin-dashboard__form">
             <input type="hidden" name="student_id" value="{{ s.id }}">
-            <button name="action" value="approve_student"
-              class="btn btn-sm btn-success me-1">✅ Zatwierdź</button>
-            <button name="action" value="delete_student"
-              class="btn btn-sm btn-danger">❌ Usuń</button>
+            <button name="action" value="approve_student" class="admin-dashboard__btn--approve">✅ Zatwierdź</button>
+            <button name="action" value="delete_student" class="admin-dashboard__btn--delete">❌ Usuń</button>
           </form>
         </li>
         {% endfor %}
@@ -36,27 +33,24 @@
     </div>
   </div>
 
-  <div class="card mb-4">
-    <div class="card-header bg-info text-white">
+  <!-- Nauczyciele oczekujący -->
+  <div class="admin-dashboard__card card">
+    <div class="admin-dashboard__header--info">
       <strong>Nauczyciele oczekujący na zatwierdzenie</strong>
     </div>
-    <div class="card-body">
+    <div class="admin-dashboard__body">
       {% if pending_teachers %}
-      <ul class="list-group">
+      <ul class="admin-dashboard__list">
         {% for t in pending_teachers %}
-        <li
-          class="list-group-item d-flex justify-content-between align-items-center">
+        <li class="admin-dashboard__list-item">
           <div>
-            {{ t.name }} {{ t.surname }}<br>
+            <strong>{{ t.name }} {{ t.surname }}</strong><br>
             <small class="text-muted">{{ t.email }}</small>
           </div>
-          <form method="POST" action="{{ url_for('admin_dashboard') }}"
-            class="mb-0">
+          <form method="POST" action="{{ url_for('admin_dashboard') }}" class="admin-dashboard__form">
             <input type="hidden" name="teacher_id" value="{{ t.id }}">
-            <button name="action" value="approve_teacher"
-              class="btn btn-sm btn-success me-1">✅ Zatwierdź</button>
-            <button name="action" value="delete_teacher"
-              class="btn btn-sm btn-danger">❌ Usuń</button>
+            <button name="action" value="approve_teacher" class="admin-dashboard__btn--approve">✅ Zatwierdź</button>
+            <button name="action" value="delete_teacher" class="admin-dashboard__btn--delete">❌ Usuń</button>
           </form>
         </li>
         {% endfor %}
@@ -67,30 +61,28 @@
     </div>
   </div>
 
-  <div class="card mb-4">
-    <div class="card-header bg-primary text-white">
+  <!-- Przypisanie studentów -->
+  <div class="admin-dashboard__card">
+    <div class="admin-dashboard__header--primary">
       <strong>Przypisz zatwierdzonych studentów</strong>
     </div>
-    <div class="card-body">
+    <div class="admin-dashboard__body">
       {% if unassigned_students %}
-      <ul class="list-group mb-4">
+      <ul class="admin-dashboard__list">
         {% for s in unassigned_students %}
-        <li class="list-group-item d-flex align-items-center flex-wrap">
-          <div class="flex-grow-1">
+        <li class="admin-dashboard__list-item--wrap">
+          <div>
             <strong>{{ s.name }} {{ s.surname }}</strong><br>
             <small class="text-muted">{{ s.email }}</small>
           </div>
-          <form method="POST" action="{{ url_for('admin_dashboard') }}"
-            class="d-flex align-items-center mb-0">
+          <form method="POST" action="{{ url_for('admin_dashboard') }}" class="admin-dashboard__form">
             <input type="hidden" name="student_id" value="{{ s.id }}">
-            <select name="teacher_ids" multiple
-              class="form-select form-select-sm me-2" style="min-width:200px">
+            <select name="teacher_ids" multiple class="admin-dashboard__select">
               {% for t in approved_teachers %}
               <option value="{{ t.id }}">{{ t.name }} {{ t.surname }}</option>
               {% endfor %}
             </select>
-            <button name="action" value="assign_student"
-              class="btn btn-sm btn-primary">📝 Przypisz</button>
+            <button name="action" value="assign_student" class="admin-dashboard__btn--update">📝 Przypisz</button>
           </form>
         </li>
         {% endfor %}
@@ -101,46 +93,34 @@
     </div>
   </div>
 
-  <div class="card mb-4">
-    <div class="card-header bg-secondary text-white">
+  <!-- Wszyscy użytkownicy -->
+  <div class="admin-dashboard__card">
+    <div class="admin-dashboard__header--secondary">
       <strong>Wszyscy użytkownicy w systemie</strong>
     </div>
-    <div class="card-body">
+    <div class="admin-dashboard__body">
+
       <h6>Studenci</h6>
       {% if assigned_students %}
-      <ul class="list-group mb-4">
+      <ul class="list-group">
         {% for s in assigned_students %}
         <li class="list-group-item">
-          <div class="d-flex justify-content-between align-items-start">
+          <div class="admin-dashboard__form--space-between">
             <div>
               <strong>{{ s.name }} {{ s.surname }}</strong><br>
               <small class="text-muted">{{ s.email }}</small>
             </div>
-            <form method="POST"
-              action="{{ url_for('admin_dashboard') }}"
-              class="d-flex align-items-center">
+            <form method="POST" action="{{ url_for('admin_dashboard') }}" class="admin-dashboard__form" style="height: 100px;">
               <input type="hidden" name="student_id" value="{{ s.id }}">
-              <select
-                name="teacher_ids"
-                multiple
-                class="form-select form-select-sm js-choices me-2"
-                style="min-width:250px"
-                placeholder="Wybierz nauczycieli">
-                {% for t in approved_teachers %}
-                <option value="{{ t.id }}" {% if t in s.teachers %}selected{%
-                  endif %}>
-                  {{ t.name }} {{ t.surname }}
-                </option>
-                {% endfor %}
-              </select>
-              <button name="action" value="update_teachers"
-                class="btn btn-sm btn-primary me-2">
-                💾
-              </button>
-              <button name="action" value="delete_student"
-                class="btn btn-sm btn-danger">
-                ❌
-              </button>
+              <div class="d-flex align-items-center gap-2">
+                <select name="teacher_ids" multiple class="admin-dashboard__select js-choices" placeholder="Wybierz nauczycieli">
+                  {% for t in approved_teachers %}
+                  <option value="{{ t.id }}" {% if t in s.teachers %}selected{% endif %}>{{ t.name }} {{ t.surname }}</option>
+                  {% endfor %}
+                </select>
+                <button name="action" value="update_teachers" class="admin-dashboard__btn--update me-2">💾</button>
+                <button name="action" value="delete_student" class="admin-dashboard__btn--delete">❌</button>
+              </div>
             </form>
           </div>
         </li>
@@ -152,19 +132,16 @@
 
       <h6>Nauczyciele</h6>
       {% if approved_teachers %}
-      <ul class="list-group">
+      <ul class="admin-dashboard__list">
         {% for t in approved_teachers %}
-        <li
-          class="list-group-item d-flex justify-content-between align-items-center">
-          {{ t.name }} {{ t.surname }} <small class="text-muted">({{ t.email }},
-            {{ t.subject }})</small>
-          <form method="POST" action="{{ url_for('admin_dashboard') }}"
-            class="mb-0">
+        <li class="admin-dashboard__list-item">
+          <div>
+            <strong>{{ t.name }} {{ t.surname }}</strong><br>
+            <small class="text-muted">({{ t.email }}, {{ t.subject }})</small>
+          </div>
+          <form method="POST" action="{{ url_for('admin_dashboard') }}" class="admin-dashboard__form">
             <input type="hidden" name="teacher_id" value="{{ t.id }}">
-            <button name="action" value="delete_teacher"
-              class="btn btn-sm btn-danger">
-              ❌
-            </button>
+            <button name="action" value="delete_teacher" class="admin-dashboard__btn--delete">❌</button>
           </form>
         </li>
         {% endfor %}
@@ -172,6 +149,7 @@
       {% else %}
       <p class="text-muted">Brak nauczycieli w systemie.</p>
       {% endif %}
+
     </div>
   </div>
 </div>
