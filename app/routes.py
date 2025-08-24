@@ -2,12 +2,12 @@ from flask import render_template, redirect, url_for, session, flash, send_from_
 from flask_login import login_user, logout_user, login_required, current_user
 from app import app, db, bcrypt, login_manager, mail, MailMessage
 from app.forms import LoginForm, RegisterForm, AssignTaskForm, TaskSubmissionForm, GradeTaskForm, WriteMessageForm
-from app.models import Student, Teacher, Task, Administrator, Message
+from app.models import Student, Teacher, Task, Administrator, Message, LessonSeries
 from sqlalchemy import and_, not_
 from werkzeug.utils import secure_filename
 from datetime import datetime
 from app.utils import compress_file
-from datetime import date, timezone
+from datetime import date, timezone, timedelta
 from app.utils import get_or_404
 import os
 import json
@@ -384,6 +384,96 @@ def chat(student_id, teacher_id, role):
         db.session.commit()
         return redirect(url_for('chat', student_id=student_id, teacher_id=teacher_id, role=role))
     return render_template('chat.html', form=form, messages=messages)
+
+@app.get("/teacher/<int:teacher_id>/lessons")
+def teacher_lessons(teacher_id):
+    start = datetime.fromisoformat(request.args["start"]).date()
+    end = datetime.fromisoformat(request.args["end"]).date()
+
+    series_list = LessonSeries.query.filter_by(teacher_id=teacher_id).all()
+    events = []
+
+    for s in series_list:
+        d = max(start, s.start_date)
+        while d <= min(end, s.end_date):
+            if d.weekday() == s.day_of_week:
+                start_dt = datetime.combine(d, s.start_time)
+                end_dt = datetime.combine(d, s.end_time)
+                events.append({
+                    "id": f"series-{s.id}-{d}",
+                    "title": f"📚 {s.student.name} {s.student.surname}",
+                    "start": start_dt.isoformat(),
+                    "end": end_dt.isoformat()
+                })
+            d += timedelta(days=1)
+
+    return jsonify(events)
+
+@app.get("/student/<int:student_id>/lessons")
+def student_lessons(student_id):
+    start = datetime.fromisoformat(request.args["start"]).date()
+    end = datetime.fromisoformat(request.args["end"]).date()
+
+    series_list = LessonSeries.query.filter_by(student_id=student_id).all()
+    events = []
+
+    for s in series_list:
+        d = max(start, s.start_date)
+        while d <= min(end, s.end_date):
+            if d.weekday() == s.day_of_week:
+                start_dt = datetime.combine(d, s.start_time)
+                end_dt = datetime.combine(d, s.end_time)
+                teacher = Teacher.query.get_or_404(s.teacher_id)
+                events.append({
+                    "id": f"series-{s.id}-{d}",
+                    "title": f"📚 {teacher.subject}",
+                    "start": start_dt.isoformat(),
+                    "end": end_dt.isoformat()
+                })
+            d += timedelta(days=1)
+
+    return jsonify(events)
+
+@app.route('/lesson/assign/<int:student_id>/<int:teacher_id>', methods=['GET', 'POST'])
+def assign_lesson(student_id, teacher_id):
+    student = Student.query.get_or_404(student_id)
+    teacher = Teacher.query.get_or_404(teacher_id)
+
+    if request.method == 'POST':
+        day_of_week = int(request.form['day_of_week'])
+        start_time = datetime.strptime(request.form['start_time'], "%H:%M").time()
+        end_time = datetime.strptime(request.form['end_time'], "%H:%M").time()
+        start_date = datetime.strptime(request.form['start_date'], "%Y-%m-%d").date()
+        end_date = datetime.strptime(request.form['end_date'], "%Y-%m-%d").date()
+
+        conflicts = LessonSeries.query.filter(
+            LessonSeries.teacher_id == teacher.id,
+            LessonSeries.day_of_week == day_of_week,
+            LessonSeries.start_date <= end_date,   
+            LessonSeries.end_date >= start_date,   
+            LessonSeries.start_time < end_time,     
+            LessonSeries.end_time > start_time      
+        ).all()
+
+        if conflicts:
+            flash("⚠️ Konflikt! Nauczyciel ma już zajęcia w tym czasie.", "danger")
+            return render_template('assign_lesson.html', student=student, teacher=teacher)
+
+        series = LessonSeries(
+            teacher_id=teacher.id,
+            student_id=student.id,
+            day_of_week=day_of_week,
+            start_time=start_time,
+            end_time=end_time,
+            start_date=start_date,
+            end_date=end_date
+        )
+        db.session.add(series)
+        db.session.commit()
+        flash("📚 Seria zajęć została dodana!", "success")
+        return redirect(url_for('dashboard'))
+
+    return render_template('assign_lesson.html', student=student, teacher=teacher)
 
 @app.route('/logout')
 @login_required

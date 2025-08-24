@@ -67,3 +67,20 @@ class Message(db.Model):
     content = db.Column(db.Text, nullable=False)
     timestamp = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     
+class LessonSeries(db.Model):
+    __tablename__ = 'lesson_series'
+    id = db.Column(db.Integer, primary_key=True)
+
+    teacher_id = db.Column(db.Integer, db.ForeignKey('teachers.id'), nullable=False)
+    student_id = db.Column(db.Integer, db.ForeignKey('students.id'), nullable=False)
+
+    day_of_week = db.Column(db.Integer, nullable=False)
+    start_time = db.Column(db.Time, nullable=False)
+    end_time = db.Column(db.Time, nullable=False)
+
+    start_date = db.Column(db.Date, nullable=True)
+    end_date = db.Column(db.Date, nullable=True)
+
+    teacher = db.relationship('Teacher', backref='lesson_series')
+    student = db.relationship('Student', backref='lesson_series')
+    

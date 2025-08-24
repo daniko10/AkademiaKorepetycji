@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block title %}Przypisz cykliczne zajęcia{% endblock %}
+
+{% block content %}
+<div class="card">
+  <div class="card-body">
+    <h3 class="h5">📚 Nowa seria zajęć dla {{ student.name }} {{ student.surname }}</h3>
+
+    <form method="post">
+      <div class="mb-3">
+        <label for="day_of_week" class="form-label">Dzień tygodnia</label>
+        <select class="form-select" id="day_of_week" name="day_of_week" required>
+          <option value="0">Poniedziałek</option>
+          <option value="1">Wtorek</option>
+          <option value="2">Środa</option>
+          <option value="3">Czwartek</option>
+          <option value="4">Piątek</option>
+          <option value="5">Sobota</option>
+          <option value="6">Niedziela</option>
+        </select>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label for="start_time" class="form-label">Godzina rozpoczęcia</label>
+          <select class="form-select" id="start_time" name="start_time" required>
+            {% for hour in range(7, 22) %}
+              {% for minute in (0,15,30,45) %}
+                {% set h = "%02d"|format(hour) %}
+                {% set m = "%02d"|format(minute) %}
+                <option value="{{ h }}:{{ m }}">{{ h }}:{{ m }}</option>
+              {% endfor %}
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label for="end_time" class="form-label">Godzina zakończenia</label>
+          <select class="form-select" id="end_time" name="end_time" required>
+            {% for hour in range(7, 22) %}
+              {% for minute in (0,15,30,45) %}
+                {% set h = "%02d"|format(hour) %}
+                {% set m = "%02d"|format(minute) %}
+                <option value="{{ h }}:{{ m }}">{{ h }}:{{ m }}</option>
+              {% endfor %}
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label for="start_date" class="form-label">Od dnia</label>
+          <input type="date" class="form-control" id="start_date" name="start_date" required>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label for="end_date" class="form-label">Do dnia</label>
+          <input type="date" class="form-control" id="end_date" name="end_date" required>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Zapisz 📅</button>
+      <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Anuluj</a>
+    </form>
+  </div>
+</div>
+{% endblock %}
