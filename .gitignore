@@ -5,3 +5,5 @@ database.db
 help.txt
 .env
 tests/__pycache__/
+*.pyc
+static/css/prettierStyles.css
