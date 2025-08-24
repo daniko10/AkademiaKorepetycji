@@ -4,3 +4,4 @@ app/__pycache__/
 database.db
 help.txt
 .env
+tests/__pycache__/
