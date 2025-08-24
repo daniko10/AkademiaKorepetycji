@@ -401,7 +401,7 @@ def teacher_lessons(teacher_id):
                 end_dt = datetime.combine(d, s.end_time)
                 events.append({
                     "id": f"series-{s.id}-{d}",
-                    "title": f"📚 {s.student.name} {s.student.surname}",
+                    "title": f" {s.student.name} {s.student.surname}",
                     "start": start_dt.isoformat(),
                     "end": end_dt.isoformat()
                 })
@@ -426,7 +426,7 @@ def student_lessons(student_id):
                 teacher = Teacher.query.get_or_404(s.teacher_id)
                 events.append({
                     "id": f"series-{s.id}-{d}",
-                    "title": f"📚 {teacher.subject}",
+                    "title": f" {teacher.subject}",
                     "start": start_dt.isoformat(),
                     "end": end_dt.isoformat()
                 })
@@ -470,7 +470,7 @@ def assign_lesson(student_id, teacher_id):
         )
         db.session.add(series)
         db.session.commit()
-        flash("📚 Seria zajęć została dodana!", "success")
+        flash("Seria zajęć została dodana!", "success")
         return redirect(url_for('dashboard'))
 
     return render_template('assign_lesson.html', student=student, teacher=teacher)
