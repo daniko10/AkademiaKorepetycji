@@ -401,7 +401,7 @@ def teacher_lessons(teacher_id):
                 end_dt = datetime.combine(d, s.end_time)
                 events.append({
                     "id": f"series-{s.id}-{d}",
-                    "title": f" {s.student.name} {s.student.surname}",
+                    "title": f"{s.student.name} {s.student.surname}",
                     "start": start_dt.isoformat(),
                     "end": end_dt.isoformat()
                 })
@@ -474,6 +474,21 @@ def assign_lesson(student_id, teacher_id):
         return redirect(url_for('dashboard'))
 
     return render_template('assign_lesson.html', student=student, teacher=teacher)
+
+@app.route('/lesson/delete/<lesson_id>', methods=['DELETE'])
+def delete_lesson(lesson_id):
+    try:
+        real_id = int(lesson_id.split("-")[1])
+    except Exception:
+        return '', 400
+    
+    lesson = LessonSeries.query.get(real_id)
+    if not lesson:
+        return '', 404
+
+    db.session.delete(lesson)
+    db.session.commit()
+    return '', 204
 
 @app.route('/logout')
 @login_required

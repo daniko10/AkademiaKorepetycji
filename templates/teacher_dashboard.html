@@ -159,7 +159,22 @@
       scrollTime: '07:00:00',  
       allDaySlot: false,
       eventTimeFormat: { hour: '2-digit', minute: '2-digit', hour12: false },
-      events: '/teacher/{{ teacher.id }}/lessons'
+      events: '/teacher/{{ teacher.id }}/lessons',
+      eventClick: function(info) {
+      if (confirm('Na pewno usunąć te zajęcia?')) {
+        fetch(`/lesson/delete/${info.event.id}`, {
+          method: 'DELETE'
+        })
+        .then(res => {
+          if (res.ok) {
+            info.event.remove();
+          } else {
+            alert('Błąd podczas usuwania');
+          }
+        })
+        .catch(() => alert('Błąd połączenia'));
+      }
+    }
   });
 
   calendar.render();
