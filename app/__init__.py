@@ -12,7 +12,7 @@ app = Flask(__name__, template_folder='../templates', static_folder='../static')
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, '..', 'database.db')
-app.config['SECRET_KEY'] = 'IASOJFSA8734NMAKLFJ34NMAKLFJ3'
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 
 UPLOAD_FOLDER = os.path.join(os.path.abspath(os.path.dirname(__file__)), '..', 'uploads')
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)  # tworzy katalog, jeśli go nie ma
