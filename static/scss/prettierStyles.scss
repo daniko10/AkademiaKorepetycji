@@ -878,3 +878,59 @@
     @extend .btn-link;
   }
 }
+
+//========================= assign_lesson.html ========================
+
+.assign-lesson {
+  @extend .row;
+  @extend .justify-content-center;
+
+  &__container {
+    @extend .col-lg-8;
+    @extend .card;
+    @extend .mt-4;
+  }
+
+  &__body {
+    @extend .card-body;
+  }
+
+  &__title {
+    @extend .h5;
+    margin-bottom: 1rem;
+  }
+
+  &__form {
+    // formularz – dodatkowe style jeśli trzeba
+  }
+
+  &__group {
+    // grupa pojedynczego pola (label + input/select)
+    @extend .mb-3;
+
+    label {
+      @extend .form-label;
+    }
+
+    select,
+    input {
+      @extend .form-control;
+    }
+  }
+  
+  &__actions {
+    margin-top: 1rem;
+    display: flex;
+    gap: 1rem;
+
+    .btn-primary {
+      @extend .btn;
+      @extend .btn-primary;
+    }
+
+    .btn-secondary {
+      @extend .btn;
+      @extend .btn-secondary;
+    }
+  }
+}
