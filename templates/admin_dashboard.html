@@ -19,7 +19,7 @@
             <strong>{{ s.name }} {{ s.surname }}</strong><br>
             <small class="text-muted">{{ s.email }}</small>
           </div>
-          <form method="POST" action="{{ url_for('admin_dashboard') }}" class="admin-dashboard__form">
+          <form method="POST" action="{{ url_for('main.admin_dashboard') }}" class="admin-dashboard__form">
             <input type="hidden" name="student_id" value="{{ s.id }}">
             <button name="action" value="approve_student" class="admin-dashboard__btn--approve">✅ Zatwierdź</button>
             <button name="action" value="delete_student" class="admin-dashboard__btn--delete">❌ Usuń</button>
@@ -47,7 +47,7 @@
             <strong>{{ t.name }} {{ t.surname }}</strong><br>
             <small class="text-muted">{{ t.email }}</small>
           </div>
-          <form method="POST" action="{{ url_for('admin_dashboard') }}" class="admin-dashboard__form">
+          <form method="POST" action="{{ url_for('main.admin_dashboard') }}" class="admin-dashboard__form">
             <input type="hidden" name="teacher_id" value="{{ t.id }}">
             <button name="action" value="approve_teacher" class="admin-dashboard__btn--approve">✅ Zatwierdź</button>
             <button name="action" value="delete_teacher" class="admin-dashboard__btn--delete">❌ Usuń</button>
@@ -75,7 +75,7 @@
             <strong>{{ s.name }} {{ s.surname }}</strong><br>
             <small class="text-muted">{{ s.email }}</small>
           </div>
-          <form method="POST" action="{{ url_for('admin_dashboard') }}" class="admin-dashboard__form">
+          <form method="POST" action="{{ url_for('main.admin_dashboard') }}" class="admin-dashboard__form">
             <input type="hidden" name="student_id" value="{{ s.id }}">
             <select name="teacher_ids" multiple class="admin-dashboard__select">
               {% for t in approved_teachers %}
@@ -110,7 +110,7 @@
               <strong>{{ s.name }} {{ s.surname }}</strong><br>
               <small class="text-muted">{{ s.email }}</small>
             </div>
-            <form method="POST" action="{{ url_for('admin_dashboard') }}" class="admin-dashboard__form" style="height: 100px;">
+            <form method="POST" action="{{ url_for('main.admin_dashboard') }}" class="admin-dashboard__form" style="height: 100px;">
               <input type="hidden" name="student_id" value="{{ s.id }}">
               <div class="d-flex align-items-center gap-2">
                 <select name="teacher_ids" multiple class="admin-dashboard__select js-choices" placeholder="Wybierz nauczycieli">
@@ -141,7 +141,7 @@
             <strong>{{ t.name }} {{ t.surname }}</strong><br>
             <small class="text-muted">({{ t.email }}, {{ t.subject }})</small>
           </div>
-          <form method="POST" action="{{ url_for('admin_dashboard') }}" class="admin-dashboard__form">
+          <form method="POST" action="{{ url_for('main.admin_dashboard') }}" class="admin-dashboard__form">
             <input type="hidden" name="teacher_id" value="{{ t.id }}">
             <button name="action" value="delete_teacher" class="admin-dashboard__btn--delete">❌</button>
           </form>

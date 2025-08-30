@@ -45,11 +45,11 @@
              data-bs-parent="#studentsAccordion">
           <div class="teacher-dashboard__accordion-body">
             <div class="teacher-dashboard__task-actions">
-              <a href="{{ url_for('assign_task', student_id=student.id) }}"
+              <a href="{{ url_for('main.assign_task', student_id=student.id) }}"
                  class="teacher-dashboard__btn-new-task">➕ Przypisz nowe zadanie</a>
-              <a href="{{ url_for('chat', student_id=student.id, teacher_id=teacher.id, role='teacher') }}"
+              <a href="{{ url_for('main.chat', student_id=student.id, teacher_id=teacher.id, role='teacher') }}"
                 class="btn btn-light-blue me-2">💬 Chat</a>
-              <a href="{{ url_for('assign_lesson', student_id=student.id, teacher_id=teacher.id) }}"
+              <a href="{{ url_for('main.assign_lesson', student_id=student.id, teacher_id=teacher.id) }}"
                 class="btn btn-light-blue me-2">📚 Przypisz termin zajęć</a>
             </div>
 
@@ -69,7 +69,7 @@
                   {% if task.earned_points is not none %}
                   <span class="teacher-dashboard__badge-graded">Ocenione: {{ task.earned_points }}/{{ task.max_points }}</span>
                   {% else %}
-                  <a href="{{ url_for('grade_task', task_id=task.id) }}"
+                  <a href="{{ url_for('main.grade_task', task_id=task.id) }}"
                      class="teacher-dashboard__btn-grade">✏️ Oceń</a>
                   {% endif %}
                   {% else %}
@@ -81,7 +81,7 @@
                   <ul class="teacher-dashboard__attachments-list">
                     {% for fn in task.submission_list %}
                       <li class="teacher-dashboard__attachments-item">
-                        <a href="{{ url_for('download_file', filename=fn) }}">{{ fn }}</a>
+                        <a href="{{ url_for('main.download_file', filename=fn) }}">{{ fn }}</a>
                       </li>
                     {% endfor %}
                   </ul>

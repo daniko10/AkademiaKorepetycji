@@ -1,6 +1,7 @@
-from flask import render_template, redirect, url_for, session, flash, send_from_directory, request, jsonify
+from flask import render_template, redirect, url_for, session, flash, send_from_directory, request, jsonify, Blueprint, current_app
 from flask_login import login_user, logout_user, login_required, current_user
-from app import app, db, bcrypt, login_manager, mail, MailMessage
+from flask_mail import Message as MailMessage
+from app import db, bcrypt, login_manager, mail
 from app.forms import LoginForm, RegisterForm, AssignTaskForm, TaskSubmissionForm, GradeTaskForm, WriteMessageForm
 from app.models import Student, Teacher, Task, Administrator, Message, LessonSeries
 from sqlalchemy import and_, not_
@@ -11,6 +12,10 @@ from datetime import date, timezone, timedelta
 from app.utils import get_or_404
 import os
 import json
+
+# Tworzymy blueprint
+bp = Blueprint('main', __name__)
+
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -24,11 +29,11 @@ def load_user(user_id):
             return Administrator.query.get(int(user_id))
     return None
 
-@app.route('/')
+@bp.route('/')
 def home():
     return render_template('home.html')
 
-@app.route("/check_email", methods=["GET"])
+@bp.route("/check_email", methods=["GET"])
 def check_email():
     email = request.args.get("email")
     
@@ -42,7 +47,7 @@ def check_email():
 
     return jsonify({"exists": exists})
 
-@app.route('/login', methods=['GET', 'POST'])
+@bp.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
     if form.validate_on_submit():
@@ -60,13 +65,13 @@ def login():
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             if hasattr(user, 'approved') and not user.approved:
                 flash('Twoje konto oczekuje na zatwierdzenie przez administratora.', 'warning')
-                return redirect(url_for('login'))
+                return redirect(url_for('main.login'))
             login_user(user)
             session['role'] = role
-            return redirect(url_for('dashboard'))
+            return redirect(url_for('main.dashboard'))
     return render_template('login.html', form=form)
 
-@app.route('/register', methods=['GET', 'POST'])
+@bp.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegisterForm()
     if form.validate_on_submit():
@@ -91,11 +96,11 @@ def register():
         db.session.add(user)
         db.session.commit()
         flash("Rejestracja zakończona pomyślnie! Proszę czekać na potwierdzenie.", "success")
-        return redirect(url_for('login'))
+        return redirect(url_for('main.login'))
 
     return render_template('register.html', form=form)
 
-@app.route('/dashboard')
+@bp.route('/dashboard')
 @login_required
 def dashboard():
     if isinstance(current_user, Teacher):
@@ -123,11 +128,11 @@ def dashboard():
                                teachers=teachers)
 
     elif isinstance(current_user, Administrator):
-        return redirect(url_for('admin_dashboard'))
+        return redirect(url_for('main.admin_dashboard'))
 
     return "Nieznany typ użytkownika", 400
 
-@app.route('/assign-task/<int:student_id>', methods=['GET', 'POST'])
+@bp.route('/assign-task/<int:student_id>', methods=['GET', 'POST'])
 @login_required
 def assign_task(student_id):
     if not isinstance(current_user, Teacher):
@@ -141,7 +146,7 @@ def assign_task(student_id):
         for file_storage in form.attachments.data:
             if file_storage:
                 filename = secure_filename(file_storage.filename)
-                filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                filepath = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
                 file_storage.save(filepath)
                 compress_file(filepath)
                 filenames.append(filename)
@@ -158,12 +163,12 @@ def assign_task(student_id):
         db.session.add(task)
         db.session.commit()
         
-        return redirect(url_for('send_email', email=student.email, purpose='assign_task'))
+        return redirect(url_for('main.send_email', email=student.email, purpose='assign_task'))
     
     today_iso = date.today().isoformat()
     return render_template('assign_task.html', form=form, student=student, min_date=today_iso)
 
-@app.route('/submit-task/<int:task_id>', methods=['GET', 'POST'])
+@bp.route('/submit-task/<int:task_id>', methods=['GET', 'POST'])
 @login_required
 def submit_task(task_id):
     task = get_or_404(Task,task_id)
@@ -176,7 +181,7 @@ def submit_task(task_id):
         for file_storage in form.attachments.data:
             if file_storage:
                 fname = secure_filename(file_storage.filename)
-                filepath = os.path.join(app.config['UPLOAD_FOLDER'], fname)
+                filepath = os.path.join(current_app.config['UPLOAD_FOLDER'], fname)
                 file_storage.save(filepath)
                 compress_file(filepath)
                 filenames.append(fname)
@@ -187,11 +192,11 @@ def submit_task(task_id):
         task.submitted = True
         db.session.commit()
 
-        return redirect(url_for('send_email', email=task.teacher.email, purpose='submit_task'))
+        return redirect(url_for('main.send_email', email=task.teacher.email, purpose='submit_task'))
         
     return render_template('submit_task.html', form=form, task=task)
 
-@app.route('/grade-task/<int:task_id>', methods=['GET', 'POST'])
+@bp.route('/grade-task/<int:task_id>', methods=['GET', 'POST'])
 @login_required
 def grade_task(task_id):
     task = get_or_404(Task,task_id)
@@ -211,11 +216,11 @@ def grade_task(task_id):
             task.earned_points = form.earned_points.data
             db.session.commit()
             
-            return redirect(url_for('send_email', email=task.student.email, purpose='grade_task'))
+            return redirect(url_for('main.send_email', email=task.student.email, purpose='grade_task'))
 
     return render_template('grade_task.html', form=form, task=task)
 
-@app.route('/send-email/<string:email>/<string:purpose>', methods=['GET', 'POST'])
+@bp.route('/send-email/<string:email>/<string:purpose>', methods=['GET', 'POST'])
 def send_email(email, purpose):    
     match purpose:
         case 'assign_task':
@@ -236,15 +241,15 @@ def send_email(email, purpose):
     except Exception as e:
         flash(f"Wystąpił błąd podczas wysyłania emaila: {str(e)}", "danger")
     
-    return redirect(url_for('dashboard'))
+    return redirect(url_for('main.dashboard'))
 
-@app.route('/uploads/<filename>')
+@bp.route('/uploads/<filename>')
 @login_required
 def download_file(filename):
     uploads_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), '..', 'uploads')
     return send_from_directory(uploads_dir, filename, as_attachment=True)
 
-@app.route('/admin/dashboard', methods=['GET','POST'])
+@bp.route('/admin/dashboard', methods=['GET','POST'])
 @login_required
 def admin_dashboard():
     if not isinstance(current_user, Administrator):
@@ -324,7 +329,7 @@ def admin_dashboard():
             db.session.commit()
             flash(f"Przypisania nauczycieli zaktualizowano dla {student.name}.", "success")
 
-        return redirect(url_for('admin_dashboard'))
+        return redirect(url_for('main.admin_dashboard'))
 
     return render_template('admin_dashboard.html',
                            pending_students=pending_students,
@@ -333,7 +338,7 @@ def admin_dashboard():
                            assigned_students=assigned_students,
                            approved_teachers=approved_teachers)
 
-@app.route('/admin/approve/<string:user_type>/<int:user_id>')
+@bp.route('/admin/approve/<string:user_type>/<int:user_id>')
 @login_required
 def approve_user(user_type, user_id):
     if not isinstance(current_user, Administrator):
@@ -344,9 +349,9 @@ def approve_user(user_type, user_id):
     user.approved = True
     db.session.commit()
     flash("Użytkownik zatwierdzony!", "success")
-    return redirect(url_for('admin_dashboard'))
+    return redirect(url_for('main.admin_dashboard'))
 
-@app.route('/chat/<int:student_id>/<int:teacher_id>/<string:role>', methods=['GET', 'POST'])
+@bp.route('/chat/<int:student_id>/<int:teacher_id>/<string:role>', methods=['GET', 'POST'])
 @login_required
 def chat(student_id, teacher_id, role):
     print('Chat route accessed')
@@ -382,10 +387,10 @@ def chat(student_id, teacher_id, role):
         )
         db.session.add(message)
         db.session.commit()
-        return redirect(url_for('chat', student_id=student_id, teacher_id=teacher_id, role=role))
+        return redirect(url_for('main.chat', student_id=student_id, teacher_id=teacher_id, role=role))
     return render_template('chat.html', form=form, messages=messages)
 
-@app.get("/teacher/<int:teacher_id>/lessons")
+@bp.get("/teacher/<int:teacher_id>/lessons")
 def teacher_lessons(teacher_id):
     start = datetime.fromisoformat(request.args["start"]).date()
     end = datetime.fromisoformat(request.args["end"]).date()
@@ -409,7 +414,7 @@ def teacher_lessons(teacher_id):
 
     return jsonify(events)
 
-@app.get("/student/<int:student_id>/lessons")
+@bp.get("/student/<int:student_id>/lessons")
 def student_lessons(student_id):
     start = datetime.fromisoformat(request.args["start"]).date()
     end = datetime.fromisoformat(request.args["end"]).date()
@@ -434,7 +439,7 @@ def student_lessons(student_id):
 
     return jsonify(events)
 
-@app.route('/lesson/assign/<int:student_id>/<int:teacher_id>', methods=['GET', 'POST'])
+@bp.route('/lesson/assign/<int:student_id>/<int:teacher_id>', methods=['GET', 'POST'])
 def assign_lesson(student_id, teacher_id):
     student = Student.query.get_or_404(student_id)
     teacher = Teacher.query.get_or_404(teacher_id)
@@ -471,11 +476,11 @@ def assign_lesson(student_id, teacher_id):
         db.session.add(series)
         db.session.commit()
         flash("Seria zajęć została dodana!", "success")
-        return redirect(url_for('dashboard'))
+        return redirect(url_for('main.dashboard'))
 
     return render_template('assign_lesson.html', student=student, teacher=teacher)
 
-@app.route('/lesson/delete/<lesson_id>', methods=['DELETE'])
+@bp.route('/lesson/delete/<lesson_id>', methods=['DELETE'])
 def delete_lesson(lesson_id):
     try:
         real_id = int(lesson_id.split("-")[1])
@@ -490,8 +495,8 @@ def delete_lesson(lesson_id):
     db.session.commit()
     return '', 204
 
-@app.route('/logout')
+@bp.route('/logout')
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for('home'))
+    return redirect(url_for('main.home'))

@@ -15,11 +15,11 @@
 
     <nav class="base__navbar">
       <div class="base__navbar-container">
-        <a class="base__navbar-brand" href="{{ url_for('home') }}">
+        <a class="base__navbar-brand" href="{{ url_for('main.home') }}">
           Akademia Korepetycji
         </a>
         {% if current_user.is_authenticated %}
-          <a class="base__logout-btn" href="{{ url_for('logout') }}">
+          <a class="base__logout-btn" href="{{ url_for('main.logout') }}">
             Wyloguj
           </a>
         {% endif %}

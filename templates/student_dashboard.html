@@ -14,7 +14,7 @@
           {% for teacher in teachers %}
           <li class="list-group-item">
             {{ teacher.name }} {{ teacher.surname }} ({{ teacher.email }})
-            <a href="{{ url_for('chat', student_id=student.id, teacher_id=teacher.id, role='student') }}"
+            <a href="{{ url_for('main.chat', student_id=student.id, teacher_id=teacher.id, role='student') }}"
               class="btn btn-light-blue btn-sm float-end">💬 Chat</a>
           </li>
           {% endfor %}
@@ -64,7 +64,7 @@
             <ul class="student-dashboard__attachments-list">
               {% for fn in task.attachment_list %}
               <li class="student-dashboard__attachment-item">
-                <a href="{{ url_for('download_file', filename=fn) }}">{{ fn }}</a>
+                <a href="{{ url_for('main.download_file', filename=fn) }}">{{ fn }}</a>
               </li>
               {% endfor %}
             </ul>
@@ -76,7 +76,7 @@
                 Odpowiedź wysłana
               </span>
               {% else %}
-              <a href="{{ url_for('submit_task', task_id=task.id) }}" 
+              <a href="{{ url_for('main.submit_task', task_id=task.id) }}" 
                  class="student-dashboard__btn-send">📩 Wyślij odpowiedź</a>
               {% endif %}
 

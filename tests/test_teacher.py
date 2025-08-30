@@ -48,6 +48,6 @@ def test_teacher_dashboard_with_students_and_tasks(client):
     assert f'Maks. pkt: {task.max_points}' not in html  # dashboard nauczyciela pokazuje max pkt tylko po ocenieniu?
 
     # Sprawdzamy link do przypisania nowego zadania
-    assert url_for('assign_task', student_id=student.id) in html
+    assert url_for('main.assign_task', student_id=student.id) in html
     # Sprawdzamy link do czatu
-    assert url_for('chat', student_id=student.id, teacher_id=teacher.id, role='teacher') in html
+    assert url_for('main.chat', student_id=student.id, teacher_id=teacher.id, role='teacher') in html

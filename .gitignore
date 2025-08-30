@@ -7,3 +7,4 @@ help.txt
 tests/__pycache__/
 *.pyc
 static/css/prettierStyles.css
+tests/test.db

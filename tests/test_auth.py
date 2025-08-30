@@ -1,4 +1,4 @@
-from app import app, db, bcrypt
+from app import db, bcrypt
 
 def test_login_wrong_password(client):
     response = client.post('/login', data={
