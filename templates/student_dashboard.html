@@ -10,12 +10,12 @@
         <h2 class="student-dashboard__title">Witaj, {{ student.name }} {{ student.surname }}!</h2>
         <p class="student-dashboard__email">Twój email: {{ student.email }}</p>
         <p class="text-muted mb-0">Twoi nauczyciele:</p>
-        <ul class="list-group mt-2">
+        <ul class="student-dashboard__teacher-list">
           {% for teacher in teachers %}
-          <li class="list-group-item">
+          <li class="student-dashboard__teacher-list-item">
             {{ teacher.name }} {{ teacher.surname }} ({{ teacher.email }})
             <a href="{{ url_for('main.chat', student_id=student.id, teacher_id=teacher.id, role='student') }}"
-              class="btn btn-light-blue btn-sm float-end">💬 Chat</a>
+              class="student-dashboard__chat-btn">💬 Chat</a>
           </li>
           {% endfor %}
       </div>

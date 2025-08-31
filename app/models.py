@@ -10,6 +10,7 @@ class UserBase(db.Model):
     surname = db.Column(db.String(15), nullable=False)
     email = db.Column(db.String(30), unique=True, nullable=False)
     password = db.Column(db.String(128), nullable=False)
+    # theme = db.Column(db.String(10), default='light')  # 'light' lub 'dark'
 
 student_teacher = db.Table(
     'student_teacher',

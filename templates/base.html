@@ -11,18 +11,35 @@
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css"/>
   </head>
-  <body class="base__body">
+  <body class="base__body {% if current_user.is_authenticated and current_user.theme == 'dark' %}dark-mode{% endif %}">
 
     <nav class="base__navbar">
       <div class="base__navbar-container">
+        <!-- logo po lewej -->
         <a class="base__navbar-brand" href="{{ url_for('main.home') }}">
           Akademia Korepetycji
         </a>
-        {% if current_user.is_authenticated %}
-          <a class="base__logout-btn" href="{{ url_for('main.logout') }}">
-            Wyloguj
-          </a>
-        {% endif %}
+
+        <!-- prawa część navbara -->
+        <div class="base__actions">
+          {% if current_user.is_authenticated %}
+            <a class="base__logout-btn" href="{{ url_for('main.logout') }}">
+              Wyloguj
+            </a>
+          {% endif %}
+
+          <button id="darkMode" class="base__darkmode-btn" aria-label="Tryb ciemny">
+            <svg xmlns="http://www.w3.org/2000/svg" 
+                width="20" height="20" fill="white" viewBox="0 0 24 24">
+              <path d="M21.752 15.002A9.718 9.718 0 0 1 12 21
+                      c-5.523 0-10-4.477-10-10
+                      0-4.988 3.657-9.128 8.448-9.876
+                      a1 1 0 0 1 1.054 1.424
+                      A7 7 0 1 0 20.928 14.07
+                      a1 1 0 0 1 .824 1.378z"/>
+            </svg>
+          </button>
+        </div>
       </div>
     </nav>
 
@@ -59,6 +76,24 @@
         });
       });
     </script>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+      const darkModeBtn = document.getElementById('darkMode');
+      if (!darkModeBtn) return;
+
+      // Ustawienie początkowego motywu na podstawie storage
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme === 'dark') {
+        document.body.classList.add('dark-mode');
+      }
+
+      darkModeBtn.addEventListener('click', () => {
+        const isDark = document.body.classList.toggle('dark-mode');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      });
+    });
+      </script>
     {% block scripts %}{% endblock %}
   </body>
 </html>

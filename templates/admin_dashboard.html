@@ -102,9 +102,9 @@
 
       <h6>Studenci</h6>
       {% if assigned_students %}
-      <ul class="list-group">
+      <ul class="admin-dashboard__list">
         {% for s in assigned_students %}
-        <li class="list-group-item">
+         <li class="admin-dashboard__list-item-students">
           <div class="admin-dashboard__form--space-between">
             <div>
               <strong>{{ s.name }} {{ s.surname }}</strong><br>

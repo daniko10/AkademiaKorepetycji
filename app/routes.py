@@ -500,3 +500,17 @@ def delete_lesson(lesson_id):
 def logout():
     logout_user()
     return redirect(url_for('main.home'))
+
+
+# roucik jeżeli tryb ciemny miałby być skojarzony z konkretnym kontem
+
+# @bp.route('/set-theme', methods=['POST'])
+# @login_required
+# def set_theme():
+#     data = request.json
+#     theme = data.get('theme')
+#     if theme in ['light', 'dark']:
+#         current_user.theme = theme
+#         db.session.commit()
+#         return jsonify({'status': 'success'})
+#     return jsonify({'status': 'error'}), 400

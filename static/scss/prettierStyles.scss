@@ -1,5 +1,7 @@
 @import "../../node_modules/bootstrap/scss/bootstrap";
 
+// ========================= admin_dashboard.html ==========================
+
 .admin-dashboard {
   @extend .container;
   @extend .py-4;
@@ -61,6 +63,10 @@
       @extend .admin-dashboard__list-item; 
       @extend .flex-wrap;
     }
+  }
+
+  &__list-item-students {
+    @extend .list-group-item;
   }
 
   // Formularze
@@ -131,9 +137,46 @@
     }
   }
 
+  &__actions {
+    @extend .d-flex;
+    @extend .align-items-center;
+    @extend .ms-auto;
+    @extend .gap-3;
+  }
+
+  &__theme-icon {
+    font-size: 1.2rem;
+    opacity: 0.5;
+    transition: opacity 0.2s;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+
   &__logout-btn {
     @extend .btn;
     @extend .btn-outline-light;
+  }
+
+  &__darkmode-btn {
+    @extend .btn;
+    @extend .btn-outline-light;
+
+    transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+
+    &:hover {
+      background-color: black;
+      color: white; // upewnia się, że tekst pozostaje widoczny
+      border-color: black; // aby obwódka pasowała do tła
+    }
+
+    &:active,
+    &.active {
+      background-color: lighten(black, 10%) !important;
+      color: white !important;
+      border-color: lighten(black, 10%) !important;
+    }
   }
 
   &__container {
@@ -301,6 +344,11 @@
     @extend .mb-0;
   }
 
+  &__students-btn{
+    @extend .btn;
+    @extend .me-2;
+  }
+
 }
 
 // ========================= login.html ========================
@@ -390,7 +438,7 @@
   }
 }
 
-//==== register
+//========================= register.html ========================
 
 .register {
   @extend .row;
@@ -577,6 +625,21 @@
     @extend .alert;
     @extend .alert-secondary;
     @extend .mb-0;
+  }
+
+  &__teacher-list{
+    @extend .list-group;
+    @extend .mt-2;
+  }
+
+  &__teacher-list-item{
+    @extend .list-group-item;
+  }
+
+  &__chat-btn{
+    @extend .btn ;
+    @extend .btn-sm;
+    @extend .float-end;
   }
 }
 
@@ -933,5 +996,1079 @@
       @extend .btn;
       @extend .btn-secondary;
     }
+  }
+}
+
+// ========================= tryb ciemny ==========================
+
+body.dark-mode {
+  background-color: #1e1e1e !important; // ciemnoszare tło
+  color: #f5f5f5;                      // jasny tekst
+
+  .text-muted {
+    color: #cccccc !important; // jasnoszary, dobrze widoczny na ciemnym tle
+  }
+
+  select,
+  select.form-select,
+  input.form-select {
+    background-color: #333 !important;   // ciemne tło
+    color: #f5f5f5 !important;           // jasny tekst
+    border-color: #555 !important;
+  }
+
+  select:focus,
+  select.form-select:focus,
+  input.form-select:focus {
+    background-color: #333 !important;
+    color: #f5f5f5 !important;
+    border-color: #777 !important;
+    box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.25);
+  }
+
+  option {
+    background-color: #333 !important;
+    color: #f5f5f5 !important;
+  }
+
+  // placeholder w input date (jeśli przeglądarka je pokazuje)
+  input.form-select::placeholder {
+    color: #aaa !important;
+  }
+
+  .choices {
+    .choices__inner {
+      background-color: #2b2b2b !important;
+      color: #f5f5f5 !important;
+      border-color: #444 !important;
+    }
+
+    .choices__list--multiple .choices__item {
+      background-color: #444 !important;
+      color: #fff !important;
+      border: 1px solid #666 !important;
+    }
+
+    .choices__list--dropdown,
+    .choices__list[role="listbox"] {
+      background-color: #2b2b2b !important;
+      color: #f5f5f5 !important;
+      border-color: #444 !important;
+    }
+
+    .choices__item--selectable.is-highlighted {
+      background-color: #555 !important;
+      color: #fff !important;
+    }
+
+    input {
+      color: #f5f5f5 !important;
+
+      &::placeholder {
+        color: #aaa !important;
+      }
+    }
+
+    .choices__input--cloned {
+      background-color: #2b2b2b !important; // takie samo jak reszta tła
+      color: #f5f5f5 !important;
+      border: none !important;
+
+      &::placeholder {
+        color: #aaa !important;
+      }
+    }
+  }
+
+  // ========================= FullCalender - tryb ciemny ==========================
+
+  #calendarCard .card {
+  background-color: #2b2b2b !important;
+  color: #f5f5f5 !important;
+  border: 1px solid #444 !important;
+  border-radius: 8px;
+}
+
+  #calendarCard .card-body {
+    background-color: #2b2b2b !important;
+    color: #f5f5f5 !important;
+  }
+
+  .fc {
+    background-color: #2b2b2b;  // główne tło
+    color: #f5f5f5;             // główny tekst
+    border-color: #444 !important;
+
+    .fc-toolbar-title {
+      color: #f5f5f5 !important;
+    }
+
+    .fc-button {
+      background-color: #2b2b2b !important;
+      border: 1px solid #444 !important;
+      color: #f5f5f5 !important;
+
+      &:hover {
+        background-color: #3a3a3a !important;
+      }
+
+      &:disabled {
+        background-color: #1a1a1a !important;
+        color: #777 !important;
+      }
+    }
+
+    .fc-timegrid-slot,
+    .fc-timegrid-axis,
+    .fc-col-header-cell {
+      background-color: #1e1e1e !important;
+      border-color: #444 !important;
+      color: #ccc !important;
+    }
+
+    .fc-event {
+      background-color: #0d6efd !important; // niebieski bootstrapowy
+      border: none !important;
+      color: #fff !important;
+      padding: 2px 4px;
+      border-radius: 4px;
+    }
+
+    .fc-timegrid-slot-label {
+      color: #999 !important;
+    }
+
+    .fc-day-today {
+      background-color: #2b2b2b !important; // podświetlenie dzisiejszego dnia
+    }
+  }
+
+// ========================= base.html - tryb ciemny ==========================
+
+  .base {
+    &__body {
+      background-color: #1e1e1e !important;
+    }
+
+    &__navbar {
+      background-color: #2c2c2c !important; // ciemniejszy navbar
+      border-color: #444 !important;
+
+      &-container {
+        // kolory tekstu i linków w navbar
+        a {
+          color: #f5f5f5 !important;
+        }
+      }
+    }
+
+    &__actions {
+      // jeśli są przyciski, linki
+      .btn, .base__darkmode-btn, .base__logout-btn {
+        color: #f5f5f5 !important;
+        border-color: #f5f5f5 !important;
+
+        &:hover {
+          background-color: #444 !important;
+          border-color: #f5f5f5 !important;
+        }
+
+        &:active,
+        &.active {
+          background-color: lighten(#444, 5%) !important;
+          border-color: #f5f5f5 !important;
+        }
+      }
+    }
+
+    &__container {
+      background-color: #1e1e1e; // ciemniejsze tło kontenera
+      color: #f5f5f5;
+    }
+
+    &__alert {
+      &--success {
+        background-color: #285e28 !important;
+        color: #e0e0e0 !important;
+        border-color: #3a9a3a !important;
+      }
+      &--danger {
+        background-color: #5e2828 !important;
+        color: #e0e0e0 !important;
+        border-color: #9a3a3a !important;
+      }
+      &--warning {
+        background-color: #5e5528 !important;
+        color: #e0e0e0 !important;
+        border-color: #9a973a !important;
+      }
+      &--info {
+        background-color: #285e5e !important;
+        color: #e0e0e0 !important;
+        border-color: #3a9a9a !important;
+      }
+
+      &-close {
+        filter: invert(1); // przycisk zamknięcia w ciemnym motywie
+      }
+    }
+  }
+
+  // ========================= login.html - tryb ciemny ==========================
+
+  .login {
+    &__card {
+      background-color: #2a2a2a; // ciemne tło karty
+      color: #f5f5f5;             // jasny tekst
+      border-color: #444;         // delikatna ramka
+
+      &-body {
+        background-color: #2a2a2a; // spójne tło card-body
+      }
+    }
+
+    &__title {
+      color: #f5f5f5;
+    }
+
+    &__label {
+      color: #e0e0e0;
+    }
+
+    &__input {
+      background-color: #3a3a3a; // ciemne pole input
+      color: #f5f5f5 !important;             // jasny tekst w polu
+      border-color: #555;         // ciemna obwódka
+
+      &::placeholder { 
+        color: #cccccc; // jasny szary, dobrze widoczny
+        opacity: 1;     // niektóre przeglądarki obniżają przezroczystość domyślnie
+      }
+
+      &:focus {
+        background-color: #3a3a3a;
+        color: #f5f5f5 !important;
+        border-color: #888;       // jaśniejszy border przy focus
+      }
+    }
+
+    &__submit-btn {
+      background-color: #007bff; // pozostaw kolor przycisku, może jaśniejszy od tła
+      border-color: #007bff;
+      color: #ffffff;
+
+      &:hover {
+        background-color: lighten(#007bff, 10%);
+      }
+
+      &:active {
+        background-color: lighten(#007bff, 10%);
+      }
+    }
+
+     &__register-link {
+      color: #ffffff;          // jasny kolor tekstu
+      text-decoration: underline;
+
+      &:hover {
+        color: #cccccc;        // jaśniejszy przy najechaniu
+      }
+    }
+  }
+
+  // ========================= login.html - tryb ciemny ==========================
+
+  .register {
+    &__card {
+      background-color: #2b2b2b; // ciemna karta
+      color: #f5f5f5;            // jasny tekst w karcie
+    }
+
+    &__input,
+    &__select {
+      background-color: #3a3a3a; // ciemne pola
+      color: #ffffff;            // tekst w polach
+      border-color: #555555;
+
+      &::placeholder {
+        color: #cccccc;          // jasne placeholdery
+      }
+    }
+
+    &__role-input {
+      background-color: #3a3a3a;
+      border-color: #555555;
+
+      &:checked {
+        background-color: #007bff; // lub inny wyróżniający kolor
+      }
+    }
+
+    &__btn {
+      background-color: #007bff; // pozostaw kolor przycisku, może jaśniejszy od tła
+      border-color: #007bff;
+      color: #ffffff;
+
+      &:hover {
+        background-color: lighten(#007bff, 10%);
+      }
+    }
+
+    &__login-link {
+      color: #ffffff;
+      a {
+        color: #ffffff;
+
+        &:hover {
+          color: #cccccc;
+        }
+      }
+    }
+
+    label {
+      color: #f5f5f5; // etykiety jasne
+    }
+  }
+
+  // ========================= admin_dashboard.html - tryb ciemny ==========================
+
+  .admin-dashboard {
+    background-color: #1e1e1e;
+    color: #f5f5f5;
+
+    &__card {
+      background-color: #2b2b2b;
+      color: #f5f5f5;
+
+      &__header {
+        &--warning {
+          background-color: #e0a800; // ciemniejszy odcień żółtego
+          color: #1e1e1e;
+        }
+        &--info {
+          background-color: #17a2b8; // ciemniejszy odcień niebieskiego
+          color: #ffffff;
+        }
+        &--primary {
+          background-color: #007bff; // ciemniejszy odcień
+          color: #ffffff;
+        }
+        &--secondary {
+          background-color: #6c757d; // ciemniejszy odcień
+          color: #ffffff;
+        }
+      }
+
+      &__body {
+        background-color: #2b2b2b;
+        color: #f5f5f5;
+      }
+    }
+
+    &__list {
+      background-color: #2b2b2b;
+      border-color: #444;
+    }
+
+    &__list-item {
+      background-color: #2b2b2b;
+      color: #f5f5f5;
+      border-color: #444;
+
+      &--wrap {
+        flex-wrap: wrap;
+      }
+    }
+    
+    &__list-item-students {
+      background-color: #2b2b2b;
+      color: #f5f5f5;
+      border-color: #444;
+    }
+
+    &__form {
+      &--space-between {
+        justify-content: space-between;
+      }
+
+      input,
+      select {
+        background-color: #3a3a3a;
+        color: #f5f5f5;
+        border-color: #555;
+
+        &::placeholder {
+          color: #cccccc;
+        }
+      }
+    }
+
+    &__select {
+      background-color: #3a3a3a;
+      color: #f5f5f5;
+      border-color: #555;
+    }
+
+    &__btn {
+      &--approve {
+        background-color: #28a745;
+        color: #fff;
+
+        &:hover {
+          background-color: lighten(#28a745, 10%);
+        }
+      }
+
+      &--delete {
+        background-color: #dc3545;
+        color: #fff;
+
+        &:hover {
+          background-color: lighten(#dc3545, 10%);
+        }
+      }
+
+      &--update {
+        background-color: #007bff;
+        color: #fff;
+
+        &:hover {
+          background-color: lighten(#007bff, 10%);
+        }
+      }
+    }
+  }
+
+  // ========================= student_dashboard.html - tryb ciemny ==========================
+
+  .student-dashboard {
+    // Karta
+    &__card {
+      background-color: #2b2b2b !important;
+      color: #f5f5f5 !important;
+      border: 1px solid #444 !important;
+    }
+
+    &__card-body {
+      background-color: #2b2b2b !important;
+    }
+
+    // Nagłówki i tytuły
+    &__title,
+    &__tasks-title {
+      color: #f5f5f5 !important;
+    }
+
+    // Tekst e-mail i inne muted
+    &__email,
+    &__task-teacher,
+    &__max-points {
+      color: #aaa !important;
+    }
+
+    // Lista zadań
+    &__task-list,
+    &__attachments-list {
+       background-color: #3a3a3a !important;
+      border: 1px solid #555 !important;
+    }
+
+    &__task-item,
+    &__attachment-item {
+       background-color: #3a3a3a !important;
+      color: #f5f5f5 !important;
+      border: 1px solid #555 !important;
+    }
+
+    &__task-header,
+    &__task-desc-row {
+      color: #f5f5f5 !important;
+    }
+
+    &__task-name,
+    &__task-desc {
+      color: #f5f5f5 !important;
+    }
+
+    // Stopka zadania
+    &__task-footer {
+      color: #f5f5f5 !important;
+    }
+
+    // Alerty
+    &__alert {
+      background-color: #3a3a3a !important;
+      color: #f5f5f5 !important;
+      border: 1px solid #555 !important;
+    }
+
+    &__teacher-list{
+      background-color: #3a3a3a !important;
+      color: #f5f5f5 !important;
+      border: 1px solid #555 !important;
+    }
+
+    &__teacher-list-item{
+      background-color: #3a3a3a !important;
+      color: #f5f5f5 !important;
+      border: 1px solid #555 !important;
+    }
+
+    &__chat-btn{
+      color: #f5f5f5;
+    }
+  }
+
+  // ========================= chat.html - tryb ciemny ==========================
+
+  .chat {
+    background-color: #1e1e1e; // ogólne tło strony chatu
+    color: #f5f5f5;
+
+    &__box {
+      background-color: #2b2b2b !important;
+      border: 1px solid #444 !important;
+      color: #f5f5f5 !important;
+
+      /* Scrollbar w dark-mode */
+      scrollbar-color: #555 #2b2b2b;
+      scrollbar-width: thin;
+    }
+
+    &__message {
+      border-radius: 8px;
+
+      &--teacher {
+        background-color: #375a7f !important; // ciemnoniebieski dla nauczyciela
+        color: #f5f5f5 !important;
+        border: none !important;
+      }
+
+      &--student {
+        background-color: #444 !important; // ciemniejszy szary dla studenta
+        color: #f5f5f5 !important;
+        border: none !important;
+      }
+    }
+
+    &__empty {
+      color: #aaa !important; // tekst "Brak wiadomości" itp.
+    }
+
+    &__label {
+      color: #ddd !important;
+    }
+
+    &__input {
+      background-color: #2b2b2b !important;
+      border: 1px solid #555 !important;
+      color: #f5f5f5 !important;
+
+      &::placeholder {
+        color: #aaa !important;
+      }
+    }
+
+    &__btn {
+      background-color: #28a745 !important; // zielony submit
+      border-color: #28a745 !important;
+      color: #fff !important;
+
+      &:hover {
+        background-color: #218838 !important;
+      }
+    }
+
+    &__back-link {
+      color: #f5f5f5 !important; // link powrotu w jasnoniebieskim
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  // ========================= teacher_dashboard.html - tryb ciemny ==========================
+
+  .teacher-dashboard {
+    background-color: #1e1e1e;
+    color: #f5f5f5;
+
+    &__card {
+      background-color: #2b2b2b !important;
+      border: 1px solid #444 !important;
+      color: #f5f5f5 !important;
+    }
+
+    &__card-body {
+      color: #f5f5f5 !important;
+    }
+
+    &__title {
+      color: #fff !important;
+    }
+
+    &__subject {
+      color: #aaa !important;
+    }
+
+    /* Akordeon */
+    &__accordion-item {
+      background-color: #2b2b2b !important;
+      border: 1px solid #444 !important;
+    }
+
+    &__accordion-button {
+      background-color: #2b2b2b !important;
+      color: #f5f5f5 !important;
+
+      &:not(.collapsed) {
+        background-color: #333 !important;
+        color: #fff !important;
+      }
+
+      &:focus {
+        box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.1) !important;
+      }
+    }
+
+    &__accordion-body {
+      background-color: #2b2b2b !important;
+      color: #ddd !important;
+    }
+
+    /* Lista zadań */
+    &__task-list {
+      background-color: #2b2b2b !important;
+    }
+
+    &__task-item {
+      background-color: #2b2b2b !important;
+      color: #f5f5f5 !important;
+      border: 1px solid #444 !important;
+    }
+
+    &__task-deadline {
+      color: #bbb !important;
+    }
+
+    /* Badge */
+    &__badge-submitted {
+      background-color: #28a745 !important;
+      color: #fff !important;
+    }
+
+    &__badge-graded {
+      background-color: #17a2b8 !important;
+      color: #fff !important;
+    }
+
+    &__badge-pending {
+      background-color: #ffc107 !important;
+      color: #000 !important; // zostawiamy czarny, bo kontrast
+    }
+
+    /* Przyciski */
+    &__btn-new-task,
+    &__btn-grade {
+      background-color: #444 !important;
+      color: #f5f5f5 !important;
+      border: 1px solid #666 !important;
+
+      &:hover {
+        background-color: #555 !important;
+      }
+    }
+
+    /* Załączniki */
+    &__attachments-list {
+      background-color: #2b2b2b !important;
+    }
+
+    &__attachments-item {
+      background-color: #2b2b2b !important;
+      border: 1px solid #444 !important;
+
+      a {
+        color: #66b2ff !important;
+        text-decoration: none;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+
+    /* Alert przy pustej liście */
+    &__alert-empty {
+      background-color: #333 !important;
+      border: 1px solid #444 !important;
+      color: #aaa !important;
+    }
+
+    &__text-empty {
+      color: #aaa !important;
+    }
+
+    &__students-btn{
+      color: #f5f5f5;
+    }
+    
+    &__accordion-button {
+      background-color: #2b2b2b !important;
+      color: #f5f5f5 !important;
+
+      &:not(.collapsed) {
+        background-color: #333 !important;
+        color: #fff !important;
+      }
+
+      // Strzałka Bootstrap
+      &::after {
+        filter: invert(1); // zmienia kolor na biały
+      }
+
+      &:focus {
+        box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.1) !important;
+      }
+    }
+
+    &__accordion-body {
+      background-color: #2b2b2b !important;
+      color: #ddd !important;
+    }
+
+  }
+
+  // ========================= assign_lesson.html - tryb ciemny ==========================
+
+  .assign-lesson {
+    &__container {
+      background-color: #2b2b2b !important;
+      color: #f5f5f5 !important;
+      border-color: #444 !important;
+    }
+
+    &__body {
+      background-color: #2b2b2b !important;
+      color: #f5f5f5 !important;
+    }
+
+    &__title {
+      color: #f5f5f5 !important;
+    }
+
+    &__group {
+      label {
+        color: #ddd !important;
+      }
+
+      select,
+      input {
+        background-color: #333 !important;
+        color: #f5f5f5 !important;
+        border-color: #555 !important;
+
+        &::placeholder {
+          color: #aaa !important; // jasne placeholdery
+        }
+      }
+    }
+
+    &__actions {
+      .btn-primary {
+        background-color: #1e7e34 !important; // ciemna zieleń
+        border-color: #145c26 !important;
+        color: #f5f5f5 !important;
+
+        &:hover,
+        &:focus {
+          background-color: #145c26 !important;
+        }
+      }
+
+      .btn-secondary {
+        background-color: #6c757d !important;
+        border-color: #5a6268 !important;
+        color: #f5f5f5 !important;
+
+        &:hover,
+        &:focus {
+          background-color: #5a6268 !important;
+        }
+      }
+    }
+  }
+
+  .assign-task {
+    &__wrapper {
+      background-color: #1e1e1e;
+      color: #f5f5f5;
+    }
+
+    &__card {
+      background-color: #2b2b2b;
+      color: #f5f5f5;
+    }
+
+    &__card-body {
+      background-color: inherit;
+      color: inherit;
+    }
+
+    &__title {
+      color: #f5f5f5;
+    }
+
+    &__label {
+      color: #f5f5f5;
+    }
+
+    &__input,
+    &__textarea {
+      background-color: #333 !important;
+      color: #f5f5f5 !important;
+      border: 1px solid #555 !important;
+
+      &:focus {
+        border-color: #777 !important;
+        box-shadow: 0 0 0 0.25rem rgba(255,255,255,0.25);
+      }
+
+      &::placeholder {
+        color: #aaa !important;
+      }
+    }
+
+    &__form-help {
+      color: #cccccc;
+    }
+
+    select.form-select {
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      background-color: #333 !important;
+      color: #f5f5f5 !important;
+      border: 1px solid #555 !important;
+      padding-right: 2rem; // miejsce na strzałkę
+
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath fill='%23FFF' d='M0 0l5 6 5-6z'/%3E%3C/svg%3E"); 
+      background-repeat: no-repeat;
+      background-position: right 0.5rem center;
+      background-size: 1rem auto;
+
+      &:focus {
+        border-color: #777 !important;
+        box-shadow: 0 0 0 0.25rem rgba(255,255,255,0.25);
+      }
+
+      option {
+        background-color: #333 !important;
+        color: #f5f5f5 !important;
+      }
+    }
+
+    &__btn-submit{
+      background-color: #444;
+      color: #f5f5f5;
+      border-color: #555;
+
+    }
+
+    &__btn-back {
+      color: #f5f5f5 !important;
+
+      &:hover {
+        color: #fff;
+      }
+    }
+    
+    &__input[type="file"] {
+      background-color: #2b2b2b !important; /* tło pola */
+      color: #f5f5f5 !important;             /* wybrany tekst */
+      border: 1px solid #444 !important;
+      padding: 0.375rem 0.75rem;
+      
+      /* Przycisk "Wybierz pliki" */
+      &::-webkit-file-upload-button {
+        background-color: #444 !important;
+        color: #f5f5f5 !important;
+        border: 1px solid #555 !important;
+        padding: 0.375rem 0.75rem;
+        cursor: pointer;
+      }
+
+      &::-moz-file-upload-button {
+        background-color: #444 !important;
+        color: #f5f5f5 !important;
+        border: 1px solid #555 !important;
+        padding: 0.375rem 0.75rem;
+        cursor: pointer;
+      }
+    }
+
+    /* Opcjonalnie label/podpowiedź */
+    .assign-task__form-help {
+      color: #cccccc !important;
+    }
+
+  }
+
+  .submit-task {
+    &__container,
+    &__column {
+      background-color: #1e1e1e;
+      color: #f5f5f5;
+    }
+
+    &__card {
+      background-color: #2b2b2b;
+      color: #f5f5f5;
+    }
+
+    &__card-body {
+      background-color: inherit;
+      color: inherit;
+    }
+
+    &__title,
+    &__subtitle,
+    &__form-text {
+      color: #f5f5f5;
+    }
+
+    &__label {
+      color: #f5f5f5;
+    }
+
+    &__input,
+    &__input-textarea {
+      background-color: #333 !important;
+      color: #f5f5f5 !important;
+      border: 1px solid #555 !important;
+
+      &:focus {
+        border-color: #777 !important;
+        box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.25);
+      }
+
+      &::placeholder {
+        color: #aaa !important;
+      }
+    }
+
+    &__button {
+      background-color: #444;
+      color: #f5f5f5;
+      border-color: #555;
+
+      &:hover {
+        background-color: #555;
+        border-color: #666;
+      }
+    }
+
+    &__back-link {
+      color: #f5f5f5 !important;
+
+      &:hover {
+        color: #fff;
+      }
+    }
+
+    &__input[type="file"] {
+      background-color: #2b2b2b !important; /* tło pola */
+      color: #f5f5f5 !important;             /* wybrany tekst */
+      border: 1px solid #444 !important;
+      padding: 0.375rem 0.75rem;
+      
+      /* Przycisk "Wybierz pliki" */
+      &::-webkit-file-upload-button {
+        background-color: #444 !important;
+        color: #f5f5f5 !important;
+        border: 1px solid #555 !important;
+        padding: 0.375rem 0.75rem;
+        cursor: pointer;
+      }
+
+      &::-moz-file-upload-button {
+        background-color: #444 !important;
+        color: #f5f5f5 !important;
+        border: 1px solid #555 !important;
+        padding: 0.375rem 0.75rem;
+        cursor: pointer;
+      }
+    }
+
+    /* Opcjonalnie label/podpowiedź */
+    .assign-task__form-help {
+      color: #cccccc !important;
+    }
+  }
+
+  .grade-task {
+    &__wrapper {
+      background-color: #1e1e1e;
+      color: #f5f5f5;
+    }
+
+    &__card {
+      background-color: #2b2b2b;
+      color: #f5f5f5;
+    }
+
+    &__card-body {
+      background-color: inherit;
+      color: inherit;
+    }
+
+    &__title,
+    &__subtitle,
+    &__answer,
+    &__answer-text,
+    &__form-help {
+      color: #f5f5f5;
+    }
+
+    &__label {
+      color: #f5f5f5;
+    }
+
+    &__input {
+      background-color: #333 !important;
+      color: #f5f5f5 !important;
+      border: 1px solid #555 !important;
+
+      &:focus {
+        border-color: #777 !important;
+        box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.25);
+      }
+
+      &::placeholder {
+        color: #aaa !important;
+      }
+    }
+
+    &__btn-submit {
+      background-color: #444;
+      color: #f5f5f5;
+      border-color: #555;
+
+      &:hover {
+        background-color: #555;
+        border-color: #666;
+      }
+    }
+
+    &__btn-back {
+      color: #f5f5f5 !important;
+
+      &:hover {
+        color: #fff;
+      }
+    }
+    
   }
 }
