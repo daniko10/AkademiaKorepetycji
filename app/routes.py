@@ -502,7 +502,7 @@ def logout():
     return redirect(url_for('main.home'))
 
 
-# roucik jeżeli tryb ciemny miałby być skojarzony z konkretnym kontem
+# route jeżeli tryb ciemny miałby być skojarzony z konkretnym kontem
 
 # @bp.route('/set-theme', methods=['POST'])
 # @login_required
