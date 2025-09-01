@@ -33,18 +33,13 @@ def load_user(user_id):
 def home():
     return render_template('home.html')
 
-@bp.route("/check_email", methods=["GET"])
-def check_email():
-    email = request.args.get("email")
-    
-    exists = False
-    if Student.query.filter_by(email=email).first():
-        exists = True
-    elif Teacher.query.filter_by(email=email).first():
-        exists = True
-    elif Administrator.query.filter_by(email=email).first():
-        exists = True
-
+@bp.route("/check_email/<email>", methods=["GET"])
+def check_email(email):
+    exists = bool(
+        Student.query.filter_by(email=email).first() or
+        Teacher.query.filter_by(email=email).first() or
+        Administrator.query.filter_by(email=email).first()
+    )
     return jsonify({"exists": exists})
 
 @bp.route('/login', methods=['GET', 'POST'])

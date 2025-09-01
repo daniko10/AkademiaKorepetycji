@@ -93,7 +93,7 @@
         return;
       }
 
-      const res = await fetch(`/check_email?email=${encodeURIComponent(email)}`);
+      const res = await fetch(`/check_email/${encodeURIComponent(email)}`);
       const data = await res.json();
 
       if (data.exists) {
