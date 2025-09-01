@@ -428,7 +428,7 @@ def student_lessons(student_id):
             if d.weekday() == s.day_of_week:
                 start_dt = datetime.combine(d, s.start_time)
                 end_dt = datetime.combine(d, s.end_time)
-                teacher = Teacher.query.get_or_404(s.teacher_id)
+                teacher = get_or_404(Teacher,s.teacher_id)
                 events.append({
                     "id": f"series-{s.id}-{d}",
                     "title": f" {teacher.subject}",
@@ -441,8 +441,8 @@ def student_lessons(student_id):
 
 @bp.route('/lesson/assign/<int:student_id>/<int:teacher_id>', methods=['GET', 'POST'])
 def assign_lesson(student_id, teacher_id):
-    student = Student.query.get_or_404(student_id)
-    teacher = Teacher.query.get_or_404(teacher_id)
+    student = get_or_404(Student,student_id)
+    teacher = get_or_404(Teacher,teacher_id)
 
     if request.method == 'POST':
         day_of_week = int(request.form['day_of_week'])
@@ -487,7 +487,7 @@ def delete_lesson(lesson_id):
     except Exception:
         return '', 400
     
-    lesson = LessonSeries.query.get(real_id)
+    lesson = db.session.get(LessonSeries, real_id)
     if not lesson:
         return '', 404
 

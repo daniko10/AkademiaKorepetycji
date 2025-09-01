@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta, timezone
-from app.models import Teacher, Student, Task, db
+from app.models import Teacher, Student, Task, db, LessonSeries
 from flask_login import login_user
 from flask import url_for
 
@@ -51,3 +51,63 @@ def test_teacher_dashboard_with_students_and_tasks(client):
     assert url_for('main.assign_task', student_id=student.id) in html
     # Sprawdzamy link do czatu
     assert url_for('main.chat', student_id=student.id, teacher_id=teacher.id, role='teacher') in html
+
+def test_teacher_dashboard_calendar_section(client):
+    teacher = Teacher.query.filter_by(email='teacher@example.com').first()
+    login_teacher(client, teacher)
+
+    response = client.get('/dashboard')
+    assert response.status_code == 200
+    html = response.data.decode()
+
+    # Sprawdzamy przycisk do rozwijania kalendarza
+    assert '📅 Pokaż kalendarz' in html
+    # Sprawdzamy, że kontener kalendarza istnieje
+    assert 'id="calendarCard"' in html
+    assert 'id="calendar"' in html
+
+def test_teacher_dashboard_assign_lesson_link(client):
+    teacher = Teacher.query.filter_by(email='teacher@example.com').first()
+    student = Student.query.filter_by(email='student@example.com').first()
+    login_teacher(client, teacher)
+
+    response = client.get('/dashboard')
+    html = response.data.decode()
+
+    # Sprawdzamy link do przypisania nowej serii lekcji
+    assert url_for('main.assign_lesson', student_id=student.id, teacher_id=teacher.id) in html
+
+def test_teacher_lessons_endpoint(client):
+    student = Student.query.filter_by(email='student@example.com').first()
+    teacher = Teacher.query.filter_by(email='teacher@example.com').first()
+
+    # Dodajemy serię zajęć (np. każdy poniedziałek we wrześniu)
+    series = LessonSeries(
+        teacher_id=teacher.id,
+        student_id=student.id,
+        day_of_week=0,  # poniedziałek
+        start_time=datetime.strptime("10:00", "%H:%M").time(),
+        end_time=datetime.strptime("11:00", "%H:%M").time(),
+        start_date=datetime(2025, 9, 1).date(),
+        end_date=datetime(2025, 9, 30).date()
+    )
+    db.session.add(series)
+    db.session.commit()
+
+    # Wywołujemy endpoint z zakresem obejmującym wrzesień
+    response = client.get(
+        f"/student/{teacher.id}/lessons?start=2025-09-01&end=2025-09-30"
+    )
+    assert response.status_code == 200
+    data = response.get_json()
+
+    # Sprawdzamy czy JSON zawiera wydarzenia
+    assert isinstance(data, list)
+    assert len(data) > 0
+
+    # Sprawdzamy przykładowe pole
+    event = data[0]
+    assert "title" in event
+    assert "start" in event
+    assert "end" in event
+    assert "Matematyka" in event["title"] or teacher.subject in event["title"]
