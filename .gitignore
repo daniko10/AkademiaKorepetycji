@@ -8,3 +8,4 @@ tests/__pycache__/
 *.pyc
 static/css/prettierStyles.css
 tests/test.db
+node_modules/.bin/*
