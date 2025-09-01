@@ -47,7 +47,7 @@
       {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
           {% for category, msg in messages %}
-            <div class="base__alert base__alert--{{ category }} alert-dismissible fade show">
+            <div class="alert base__alert base__alert--{{ category }} alert-dismissible fade show">
               {{ msg }}
               <button type="button" class="base__alert-close" data-bs-dismiss="alert"></button>
             </div>
